@@ -1,0 +1,7 @@
+export function PrescriptionInfo(){
+    return(
+        <>
+            
+        </>
+    )
+}
