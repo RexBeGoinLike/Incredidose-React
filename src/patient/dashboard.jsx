@@ -1,7 +1,12 @@
+import { Header } from './../common/header'
+
 export function PatientDashboard() {
     return (
-        <div>
-            <h1>Patient Dashboard</h1>
-        </div>
+        <>
+            <Header />
+            <div>
+
+            </div>
+        </>
     );
 }
