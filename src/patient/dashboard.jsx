@@ -18,19 +18,19 @@ export function PatientDashboard() {
     return (
         <>
             <Header />
-            <div className="flex flex-col p-10 pl-20 gap-4">
-                <div className="flex justify-between">
-                    <Button><Clipboard /> View Report</Button>
-                        <div className="flex gap-4">
-                            <Button 
-                                variant={showPrescriptions ? "default" : "outline"}
-                                onClick={() => setShowPrescriptions(true)}
-                                ><Pill /> Show Prescriptions</Button>
-                            <Button 
-                                variant={showPrescriptions ? "outline" : "default"}
-                                onClick={() => setShowPrescriptions(false)}
-                                ><History /> Show Purchase History</Button>
-                        </div>
+            <div className="flex flex-col p-10 gap-4">
+                    <div>
+                        <Button className="grow-0"><Clipboard /> View Report</Button>
+                    </div>
+                    <div className="flex flex-row flex-wrap gap-4 ml-auto">
+                        <Button 
+                            variant={showPrescriptions ? "default" : "outline"}
+                            onClick={() => setShowPrescriptions(true)}
+                            ><Pill /> Show Prescriptions</Button>
+                        <Button 
+                            variant={showPrescriptions ? "outline" : "default"}
+                            onClick={() => setShowPrescriptions(false)}
+                            ><History /> Show Purchase History</Button>
                     </div>
                 <div>
                     <Card>
