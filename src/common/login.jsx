@@ -15,7 +15,7 @@ export function Login() {
 
     const login = () => {
         alert(`Email: ${email}\nPassword: ${password}`);
-        navigate('/patient/dashboard');
+        navigate('/doctor/dashboard');
     };
 
     return(

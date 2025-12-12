@@ -1,8 +1,7 @@
 import { Header } from './header'
 import { useNavigate, useParams } from 'react-router-dom';
 import { ShoppingBag, Eye} from 'lucide-react'
-import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { DialogHeader } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger, DialogHeader  } from '@/components/ui/dialog';
 import { useState } from 'react';
 import { Separator } from '@/components/ui/separator';
 import { DataTable } from '@/components/ui/datatable';
