@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom';
 export function PatientDashboard() {
 
     const [showPrescriptions, setShowPrescriptions] = useState(true);
-    const [data, setData] = useState([]);
+    const [rowData, setRowData] = useState([]);
 
     const navigate = useNavigate();
 
@@ -19,19 +19,22 @@ export function PatientDashboard() {
         <>
             <Header />
             <div className="flex flex-col p-10 gap-4">
-                    <div>
-                        <Button className="grow-0"><Clipboard /> View Report</Button>
+                    <div className="flex flex-row justify-between flex-wrap gap-4">
+                        <div>
+                            <Button className="grow-0"><Clipboard /> View Report</Button>
+                        </div>
+                        <div className="flex flex-row flex-wrap gap-4">
+                            <Button 
+                                variant={showPrescriptions ? "default" : "outline"}
+                                onClick={() => setShowPrescriptions(true)}
+                                ><Pill /> Show Prescriptions</Button>
+                            <Button 
+                                variant={showPrescriptions ? "outline" : "default"}
+                                onClick={() => setShowPrescriptions(false)}
+                                ><History /> Show Purchase History</Button>
+                        </div>
                     </div>
-                    <div className="flex flex-row flex-wrap gap-4 ml-auto">
-                        <Button 
-                            variant={showPrescriptions ? "default" : "outline"}
-                            onClick={() => setShowPrescriptions(true)}
-                            ><Pill /> Show Prescriptions</Button>
-                        <Button 
-                            variant={showPrescriptions ? "outline" : "default"}
-                            onClick={() => setShowPrescriptions(false)}
-                            ><History /> Show Purchase History</Button>
-                    </div>
+
                 <div>
                     <Card>
                         <CardHeader>

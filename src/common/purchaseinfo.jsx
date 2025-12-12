@@ -1,69 +1,46 @@
-import { Header } from "./header";
-import { useState } from "react";
-import { DataTable } from "@/components/ui/datatable";
+import { Header } from './header'
+import { useNavigate, useParams } from 'react-router-dom';
+import { Receipt } from 'lucide-react'
+import { useState } from 'react';
+import { DataTable } from '@/components/ui/datatable';
+import { Button } from '@/components/ui/button';
 
 export function PurchaseInfo(){
 
-    const [originalRowData, setOriginalRowData] = useState([
-        { make: "Tesla", model: "Model Y", price: 64950, electric: true },
-        { make: "Ford", model: "F-Series", price: 33850, electric: false },
-        { make: "Toyota", model: "Corolla", price: 29600, electric: false },
-        { make: "Tesla", model: "Model Y", price: 64950, electric: true },
-        { make: "Ford", model: "F-Series", price: 33850, electric: false },
-        { make: "Toyota", model: "Corolla", price: 29600, electric: false },
-        { make: "Tesla", model: "Model Y", price: 64950, electric: true },
-        { make: "Ford", model: "F-Series", price: 33850, electric: false },
-        { make: "Toyota", model: "Corolla", price: 29600, electric: false },
-        { make: "Tesla", model: "Model Y", price: 64950, electric: true },
-        { make: "Ford", model: "F-Series", price: 33850, electric: false },
-        { make: "Toyota", model: "Corolla", price: 29600, electric: false },
-        { make: "Tesla", model: "Model Y", price: 64950, electric: true },
-        { make: "Ford", model: "F-Series", price: 33850, electric: false },
-        { make: "Toyota", model: "Corolla", price: 29600, electric: false },
-        { make: "Tesla", model: "Model Y", price: 64950, electric: true },
-        { make: "Ford", model: "F-Series", price: 33850, electric: false },
-        { make: "Toyota", model: "Corolla", price: 29600, electric: false },
-        { make: "Tesla", model: "Model Y", price: 64950, electric: true },
-        { make: "Ford", model: "F-Series", price: 33850, electric: false },
-        { make: "Toyota", model: "Corolla", price: 29600, electric: false },
-        { make: "Tesla", model: "Model Y", price: 64950, electric: true },
-        { make: "Ford", model: "F-Series", price: 33850, electric: false },
-        { make: "Toyota", model: "Corolla", price: 29600, electric: false },
-        { make: "Tesla", model: "Model Y", price: 64950, electric: true },
-        { make: "Ford", model: "F-Series", price: 33850, electric: false },
-        { make: "Toyota", model: "Corolla", price: 29600, electric: false },
-        { make: "Tesla", model: "Model Y", price: 64950, electric: true },
-        { make: "Ford", model: "F-Series", price: 33850, electric: false },
-        { make: "Toyota", model: "Corolla", price: 29600, electric: false },
-        { make: "Tesla", model: "Model Y", price: 64950, electric: true },
-        { make: "Ford", model: "F-Series", price: 33850, electric: false },
-        { make: "Toyota", model: "Corolla", price: 29600, electric: false },
-        { make: "Tesla", model: "Model Y", price: 64950, electric: true },
-        { make: "Ford", model: "F-Series", price: 33850, electric: false },
-        { make: "Toyota", model: "Corolla", price: 29600, electric: false }
-    ]);
+    const { purchaseid } = useParams();
+    const [originalRowData, setOriginalRowData] = useState(
+        [
+            {name: "Ibuprofen", brand: "Alaxan", quantity: 10, dosage: 20, price: 100},
+            {name: "Paracetamol", brand: "Generic", quantity: 10, dosage: 20, price: 200}
+        ]
+    )
 
     const [rowData, setRowData] = useState(originalRowData);
 
-    const [colDefs, setColDefs] = useState([
-        { field: "make", flex: 1, filter: true },
-        { field: "model", flex: 1, filter: true  },
-        { field: "price", flex: 1, filter: true   },
-        { field: "electric", flex: 1, filter: true  }
-    ]);
+    const [colDefs, setColDefs] = useState(
+        [
+            { headerName: "Name", field: "name", flex: 2.5, filter: true },
+            { headerName: "Brand", field: "brand", flex: 2.5, filter: true  },
+            { headerName: "Quantity", field: "quantity", flex: 1, filter: true },
+            { headerName: "Dosage", field: "dosage", flex: 1, filter: true  },
+            { headerName: "Price (Php)", field: "price", flex: 1, filter: true  }
+        ]
+    );
+    
+    const pinnedBottomRowData = [{name: "Total", price: originalRowData.reduce((sum, item) => sum + item.price, 0)}]
+
+    const navigate = useNavigate();
 
     const searchFunction = (value) => {
-        setRowData(originalRowData.filter(item => item.make.includes(value.trim())));
-    }
+        setRowData(originalRowData.filter(item => item.name.includes(value.trim()) || item.brand.includes(value.trim())));
+    };
 
-    return (
+    return(
         <>
             <Header />
-            <div className="p-10">
-                <DataTable rowData={rowData} colDefs={colDefs} allowSearch={true} searchFunction={searchFunction}/>
-            </div>
-
+            <DataTable rowData={rowData} colDefs={colDefs} pinnedBottomRowData={pinnedBottomRowData} searchFunction={searchFunction} searchPlaceholder={"Enter brand or medicine name..."}>
+                <Button onClick={() => navigate(`/common/payments/${purchaseid}`)}><Receipt /> View Payments</Button>
+            </DataTable>
         </>
-        
     );
 }
