@@ -1,23 +1,69 @@
 import { Header } from "./header";
-import { Table, TableRow, TableHead, TableHeader } from "@/components/ui/table";
+import { useState } from "react";
+import { DataTable } from "@/components/ui/datatable";
 
 export function PurchaseInfo(){
-    return(
+
+    const [originalRowData, setOriginalRowData] = useState([
+        { make: "Tesla", model: "Model Y", price: 64950, electric: true },
+        { make: "Ford", model: "F-Series", price: 33850, electric: false },
+        { make: "Toyota", model: "Corolla", price: 29600, electric: false },
+        { make: "Tesla", model: "Model Y", price: 64950, electric: true },
+        { make: "Ford", model: "F-Series", price: 33850, electric: false },
+        { make: "Toyota", model: "Corolla", price: 29600, electric: false },
+        { make: "Tesla", model: "Model Y", price: 64950, electric: true },
+        { make: "Ford", model: "F-Series", price: 33850, electric: false },
+        { make: "Toyota", model: "Corolla", price: 29600, electric: false },
+        { make: "Tesla", model: "Model Y", price: 64950, electric: true },
+        { make: "Ford", model: "F-Series", price: 33850, electric: false },
+        { make: "Toyota", model: "Corolla", price: 29600, electric: false },
+        { make: "Tesla", model: "Model Y", price: 64950, electric: true },
+        { make: "Ford", model: "F-Series", price: 33850, electric: false },
+        { make: "Toyota", model: "Corolla", price: 29600, electric: false },
+        { make: "Tesla", model: "Model Y", price: 64950, electric: true },
+        { make: "Ford", model: "F-Series", price: 33850, electric: false },
+        { make: "Toyota", model: "Corolla", price: 29600, electric: false },
+        { make: "Tesla", model: "Model Y", price: 64950, electric: true },
+        { make: "Ford", model: "F-Series", price: 33850, electric: false },
+        { make: "Toyota", model: "Corolla", price: 29600, electric: false },
+        { make: "Tesla", model: "Model Y", price: 64950, electric: true },
+        { make: "Ford", model: "F-Series", price: 33850, electric: false },
+        { make: "Toyota", model: "Corolla", price: 29600, electric: false },
+        { make: "Tesla", model: "Model Y", price: 64950, electric: true },
+        { make: "Ford", model: "F-Series", price: 33850, electric: false },
+        { make: "Toyota", model: "Corolla", price: 29600, electric: false },
+        { make: "Tesla", model: "Model Y", price: 64950, electric: true },
+        { make: "Ford", model: "F-Series", price: 33850, electric: false },
+        { make: "Toyota", model: "Corolla", price: 29600, electric: false },
+        { make: "Tesla", model: "Model Y", price: 64950, electric: true },
+        { make: "Ford", model: "F-Series", price: 33850, electric: false },
+        { make: "Toyota", model: "Corolla", price: 29600, electric: false },
+        { make: "Tesla", model: "Model Y", price: 64950, electric: true },
+        { make: "Ford", model: "F-Series", price: 33850, electric: false },
+        { make: "Toyota", model: "Corolla", price: 29600, electric: false }
+    ]);
+
+    const [rowData, setRowData] = useState(originalRowData);
+
+    const [colDefs, setColDefs] = useState([
+        { field: "make", flex: 1, filter: true },
+        { field: "model", flex: 1, filter: true  },
+        { field: "price", flex: 1, filter: true   },
+        { field: "electric", flex: 1, filter: true  }
+    ]);
+
+    const searchFunction = (value) => {
+        setRowData(originalRowData.filter(item => item.make.includes(value.trim())));
+    }
+
+    return (
         <>
-          <Header />
-          <div className="flex flex-col p-10 gap-4">
-             <Table>
-                <TableHeader>
-                    <TableRow>
-                        <TableHead>Name</TableHead>
-                        <TableHead>Brand</TableHead>
-                        <TableHead>Quantity</TableHead>
-                        <TableHead>Dosage</TableHead>
-                        <TableHead>Reference Number</TableHead>
-                    </TableRow>
-                </TableHeader>
-              </Table>
-          </div>
+            <Header />
+            <div className="p-10">
+                <DataTable rowData={rowData} colDefs={colDefs} allowSearch={true} searchFunction={searchFunction}/>
+            </div>
+
         </>
+        
     );
 }

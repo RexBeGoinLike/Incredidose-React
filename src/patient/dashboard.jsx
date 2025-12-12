@@ -65,7 +65,7 @@ export function PatientDashboard() {
                                                 <ItemDescription>09053195976</ItemDescription>
                                             </ItemContent>
                                             <ItemActions>
-                                                <Button onClick={() => navigate()}><Eye /> View</Button>
+                                                <Button onClick={() => navigate(`/common/purchaseinfo/1`)}><Eye /> View</Button>
                                             </ItemActions>
                                         </Item>
                                     </>

@@ -19,7 +19,7 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/patient/dashboard" element={<PatientDashboard />} />
         <Route path="/common/prescriptioninfo/:prescriptionid" element={<PrescriptionInfo />} />
-        <Route path="/common/purchases/:prescriptionid" element={<PurchaseInfo />} />
+        <Route path="/common/purchaseinfo/:prescriptionid" element={<PurchaseInfo />} />
         <Route path="/common/payments/:purchaseid" element={<Payments />} />
       </Routes>
     </Router>
