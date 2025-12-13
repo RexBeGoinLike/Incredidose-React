@@ -26,7 +26,7 @@ export function PrescriptionInfo(){
         { headerName: "Quantity", field: "quantity", flex: 1, filter: true },
         { headerName: "Dosage", field: "dosage", flex: 1, filter: true  },
         { headerName: "Action",
-             cellRenderer: props => {
+            cellRenderer: props => {
             const { name, brand, available, quantity, dosage, frequency, substitutions, description } = props.data;
             return(<div className="flex items-center h-1/1 w-1/1">
                 <Dialog>

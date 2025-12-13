@@ -15,6 +15,7 @@ import { PatientDashboard } from './patient/dashboard';
 
 //Doctor UI
 import { DoctorDashboard } from './doctor/dashboard';
+import { CreateNewPrescription } from './doctor/createnewprescription';
 
 
 function App() {  
@@ -28,10 +29,10 @@ function App() {
         <Route path="/common/prescriptioninfo/:prescriptionid" element={<PrescriptionInfo />} />
         <Route path="/common/purchaseinfo/:prescriptionid" element={<PurchaseInfo />} />
         <Route path="/common/payments/:purchaseid" element={<Payments />} />
-        <Route path="/common/prescriptionlist/:patientid" element={<ViewPrescriptions />} />
-   
+        <Route path="/common/prescriptionlist/:doctorid?/:patientid" element={<ViewPrescriptions />} />
       
         <Route path="/doctor/dashboard" element={<DoctorDashboard />} />
+        <Route path="/doctor/createnewprescription" element={<CreateNewPrescription />} />
       </Routes>
     </Router>
   );

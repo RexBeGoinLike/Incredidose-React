@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { Children, useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTrigger, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Eye } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { FieldGroup, FieldSet, Field, FieldLabel } from "@/components/ui/field";
 
 export function PatientViewRenderer({ data }) {
     const {
@@ -28,12 +29,12 @@ export function PatientViewRenderer({ data }) {
 
     const isChanged = () => {
         return (
-            firstName != firstname ||
-            lastName != lastname ||
-            contactNum != contactnum ||
-            emailAddress != email ||
+            firstName.trim() != firstname ||
+            lastName.trim() != lastname ||
+            contactNum.trim() != contactnum ||
+            emailAddress.trim() != email ||
             birthDate != birthdate ||
-            gndr != gender
+            gndr.trim() != gender
         );
     };
 
@@ -55,68 +56,67 @@ export function PatientViewRenderer({ data }) {
 
             <Button onClick={() => {navigate(`/common/prescriptionlist/1/${userid}`)}} className="mb-4">Manage Prescriptions</Button>
 
-            <form className="grid grid-cols-2 gap-6">
-            
-                <div className="flex flex-col gap-4">
-                    <div>
-                        <h3 className="text-sm font-medium">First Name</h3>
+            <form>
+                <FieldGroup className="grid grid-cols-2 gap-6">
+                <FieldSet className="flex flex-col gap-4">
+                    <Field>
+                        <FieldLabel className="text-sm font-medium">First Name</FieldLabel>
                         <Input
                             type="text"
                             value={firstName}
                             onChange={(e) => setFName(e.target.value)}
                         />
-                    </div>
+                    </Field>
 
-                    <div>
-                        <h3 className="text-sm font-medium">Birthdate</h3>
+                    <Field>
+                        <FieldLabel className="text-sm font-medium">Birthdate</FieldLabel>
                         <Input
                             type="date"
                             value={birthDate}
                             onChange={(e) => setBirthdate(e.target.value)}
                         />
-                    </div>
+                    </Field>
 
-                    <div>
-                        <h3 className="text-sm font-medium">Mobile Number</h3>
+                    <Field>
+                        <FieldLabel className="text-sm font-medium">Mobile Number</FieldLabel>
                         <Input
                             type="text"
                             value={contactNum}
                             onChange={(e) => setCNum(e.target.value)}
                         />
-                    </div>
-                </div>
-
-                <div className="flex flex-col gap-4">
-                    <div>
-                        <h3 className="text-sm font-medium">Last Name</h3>
+                    </Field>
+                </FieldSet>
+                <FieldSet className="flex flex-col gap-4">
+                    <Field>
+                        <FieldLabel className="text-sm font-medium">Last Name</FieldLabel>
                         <Input
                             type="text"
                             value={lastName}
                             onChange={(e) => setLName(e.target.value)}
                         />
-                    </div>
+                    </Field>
 
-                    <div>
-                        <h3 className="text-sm font-medium">Gender</h3>
+                    <Field>
+                        <FieldLabel className="text-sm font-medium">Gender</FieldLabel>
                         <Input
                             type="text"
                             value={gndr}
                             onChange={(e) => setGender(e.target.value)}
                         />
-                    </div>
+                    </Field>
 
-                    <div>
-                        <h3 className="text-sm font-medium">Email</h3>
+                    <Field>
+                        <FieldLabel className="text-sm font-medium">Email</FieldLabel>
                         <Input
                             type="email"
                             value={emailAddress}
                             onChange={(e) => setEmailAddress(e.target.value)}
                         />
-                    </div>
-                </div>
+                    </Field>
+                </FieldSet>
 
                 <Button className="col-span-2" type="submit" disabled={!isChanged()}>Edit</Button>
-
+                </FieldGroup>
             </form>
 
         </DialogContent>
