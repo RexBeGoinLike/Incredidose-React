@@ -9,8 +9,7 @@ export function DataTable(props){
     let {rowData, colDefs, searchFunction, searchPlaceholder, rowHeight, children, pinnedBottomRowData} = props;
 
     return (
-        <div className="flex flex-col gap-4 w-1/1 p-10"> 
-
+        <div className="flex flex-col gap-4 w-1/1 p-10 pt-5"> 
             <div className='flex justify-between gap-4 flex-wrap'>
                 {searchFunction && (
                     <div className="w-1/3">
@@ -21,7 +20,6 @@ export function DataTable(props){
                     {children}
                 </div>
             </div>
-
 
             <div style={{ height: '70vh', width:'100%'}}>
                 <AgGridReact

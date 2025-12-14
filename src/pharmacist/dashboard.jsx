@@ -1,6 +1,5 @@
 import { Header } from "@/common/header";
-import { Tabs } from "@/components/ui/tabs";
-import { TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState } from "react";
 import { DataTable } from "@/components/ui/datatable";
 import { useNavigate } from "react-router-dom";
@@ -36,6 +35,10 @@ export function PharmacistDashboard(){
         }
     ]);
     
+    const searchFunction = (value) => {
+        setRowData(prev => prev.filter(user => user.firstname.includes(value.trim()) || user.lastname.includes(value.trim())));
+    };
+
     const [rowData, setRowData] = useState(originalRowData);
 
     const [doctorColDefs, setDoctorColDefs] = useState(
@@ -66,17 +69,18 @@ export function PharmacistDashboard(){
     return (
         <>
             <Header />
-            <Tabs defaultValue="patient">
-                <TabsList>
-                    <TabsTrigger value="patient">Patient</TabsTrigger>
-                    <TabsTrigger value="doctor">Doctor</TabsTrigger>
-                    
-                </TabsList>
+            <Tabs defaultValue="patient" >
+                <div className="p-10 -mb-10">
+                    <TabsList >
+                        <TabsTrigger value="patient">Patient</TabsTrigger>
+                        <TabsTrigger value="doctor">Doctor</TabsTrigger>
+                    </TabsList>
+                </div>
                 <TabsContent value="patient">
-                    <DataTable rowData={rowData} colDefs={patientColDefs} />
+                    <DataTable rowData={rowData} colDefs={patientColDefs} searchFunction={searchFunction} searchPlaceholder={"Enter a patient's name..."} />
                 </TabsContent>
                 <TabsContent value="doctor">
-                    <DataTable rowData={rowData} colDefs={doctorColDefs} />
+                    <DataTable rowData={rowData} colDefs={doctorColDefs} searchFunction={searchFunction} searchPlaceholder={"Enter a doctor's name..."}/>
                 </TabsContent>
             </Tabs>
         </>

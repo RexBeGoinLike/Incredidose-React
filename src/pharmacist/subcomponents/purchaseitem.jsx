@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTrigger, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Pencil } from "lucide-react";
+import { Pencil, ShoppingBag } from "lucide-react";
 import { FieldGroup, FieldSet, Field, FieldLabel } from "@/components/ui/field";
 import { nanoid } from "nanoid";
 
@@ -54,7 +54,7 @@ export function EditPurchaseItemDialog({ onSave, props }) {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger className="flex h-1/1 items-center justify-center" asChild>
-                <Button variant="ghost" size="sm"><Pencil /></Button>
+                <Button variant="ghost" size="sm"><ShoppingBag /></Button>
             </DialogTrigger>
 
             <DialogContent className="max-w-xl">

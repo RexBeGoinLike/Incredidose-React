@@ -18,7 +18,7 @@ export function Login() {
         setIsLoading(true); 
         
         try {
-            const response = await fetch('http://localhost/Incredidose/includes/login.php?action=login', {
+            const response = await fetch('/server/includes/login.php?action=login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -32,7 +32,6 @@ export function Login() {
             const data = await response.json();
 
             if (data.success) {
-                // Store session data in localStorage
                 localStorage.setItem('user', JSON.stringify({
                     id: data.userid,
                     name: `${data.firstname} ${data.lastname}`,
@@ -41,11 +40,9 @@ export function Login() {
                     token: data.token
                 }));
                 
-                // Store token separately for easy access
                 localStorage.setItem('token', data.token);
                 
-                // Navigate based on role
-                if (data.role === 'pharmacist') {
+                if (data.role === 'pcr') {
                     navigate('/pharmacist/dashboard');
                 } else if (data.role === 'doctor') {
                     navigate('/doctor/dashboard');
@@ -59,11 +56,10 @@ export function Login() {
             alert('Login failed. Please check your credentials.');
             console.error('Login error:', error);
         } finally {
-            setIsLoading(false); 
+            setIsLoading(false);
         }
     };
 
-    // Check if already logged in on mount
     useState(() => {
         const userData = localStorage.getItem('user');
         if (userData) {
@@ -79,7 +75,7 @@ export function Login() {
             
             <div className="flex w-full max-w-4xl overflow-hidden rounded-xl shadow-2xl">
                 
-                <div className="hidden lg:flex lg:w-1/2 items-center justify-center p-12 bg-[#CB558C] text-white">
+                <div className="hidden lg:flex lg:w-1/2 items-center justify-center p-12 bg-black text-white">
                     <div className="text-center">
                         <img 
                             src={IncrediDoseLogo} 

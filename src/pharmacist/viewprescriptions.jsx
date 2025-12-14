@@ -42,7 +42,7 @@ export function PharmacistViewPrescriptions(props){
             cellRenderer: props =>  {
                 return(
                     <div className="flex h-1/1 items-center">
-                        <Button onClick={() => navigate('/pharmacist/viewprescriptions/prescriptioninfo')} variant="ghost"><Eye /></Button>
+                        <Button onClick={() => navigate('/pharmacist/viewprescriptions/prescriptioninfo ')} variant="ghost"><Eye /></Button>
                     </div>
                 )
             }

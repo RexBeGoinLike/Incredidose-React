@@ -43,14 +43,12 @@ export function EditPrescriptionItems(){
     const [isCartOpen, setIsCartOpen] = useState(false);
 
     const handleSave = (data) => {
-        // Find the original item data to get name and brand
         const originalItem = originalRowData.find(item => 
             item.prescriptionitemid === data.precriptionitemid
         );
         
         if (!originalItem) return;
         
-        // Check if item already exists in cart
         const existingIndex = cart.findIndex(item => 
             item.precriptionitemid === data.precriptionitemid
         );
@@ -63,14 +61,12 @@ export function EditPrescriptionItems(){
         };
         
         if (existingIndex >= 0) {
-            // Update existing item
             setCart(prev => {
                 const updatedCart = [...prev];
                 updatedCart[existingIndex] = cartItem;
                 return updatedCart;
             });
         } else {
-            // Add new item
             setCart(prev => [...prev, cartItem]);
         }
     };
@@ -326,7 +322,7 @@ export function EditPrescriptionItems(){
                                                         </label>
                                                         <div className="h-8 flex items-center justify-end">
                                                             <span className="font-medium">
-                                                                ${item.totalprice.toFixed(2)}
+                                                                Php {item.totalprice.toFixed(2)}
                                                             </span>
                                                         </div>
                                                     </div>

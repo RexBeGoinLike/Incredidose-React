@@ -26,16 +26,8 @@ export function CreateNewPrescription(props){
     }
 
     const deleteData = (id, e) => {
-        e.preventDefault();
-   
-        setOriginalRowData(prev => {
-            if(prev.length <= 1)
-                alert("Unable to Delete");
-            else
-                prev.filter(item => item.id != id);
-        });
-
-        setRowData(originalRowData);
+        setOriginalRowData(prev => prev.filter(item => item.id !== id));
+        setRowData(prev => {console.log(prev); prev.filter(item => item.id !== id)});
     }
 
     const [colDefs, setColDefs] = useState([
