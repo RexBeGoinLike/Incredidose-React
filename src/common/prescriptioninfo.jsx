@@ -2,22 +2,25 @@ import { Header } from './header'
 import { useNavigate, useParams } from 'react-router-dom';
 import { ShoppingBag, Eye} from 'lucide-react'
 import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger, DialogHeader  } from '@/components/ui/dialog';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Separator } from '@/components/ui/separator';
 import { DataTable } from '@/components/ui/datatable';
 import { Button } from '@/components/ui/button';
+import { getToken } from './login';
 
 export function PrescriptionInfo(){
-
     const { prescriptionid } = useParams();
-    const [originalRowData, setOriginalRowData] = useState(
-        [
-            {name: "Ibuprofen", brand: "Alaxan", available: 10, quantity: 20, dosage: 20, substitutions: true, frequency: 1, description: ""},
-            {name: "Paracetamol", brand: "Generic", available: 10, quantity: 20, dosage: 20, substitutions: true, frequency: 1, description: "No king"}
-        ]
-    )
+    const [originalRowData, setOriginalRowData] = useState()
+    const [rowData, setRowData] = useState();
 
-    const [rowData, setRowData] = useState(originalRowData);
+    useEffect(() => {
+        fetch(`/server/includes/prescriptionitem_manager.php?action=getPrescriptionItems&prescriptionid=${prescriptionid}`)
+        .then(res => res.json())
+        .then(data => {
+            setOriginalRowData(data);
+            setRowData(data);
+        });
+    }, []);
 
     const [colDefs, setColDefs] = useState([
         { headerName: "Name", field: "name", flex: 2.5, filter: true },

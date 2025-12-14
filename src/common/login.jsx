@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Loader2 } from 'lucide-react'; 
 import IncrediDoseLogo from '@/assets/logo-image.png';
 import IncrediDoseText from '@/assets/logo-text.png';
@@ -11,11 +11,11 @@ import IncrediDoseText from '@/assets/logo-text.png';
 export function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [isLoading, setIsLoading] = useState(false); 
+    const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
     const login = async () => {
-        setIsLoading(true); 
+        setIsLoading(true);
         
         try {
             const response = await fetch('/server/includes/login.php?action=login', {
@@ -26,7 +26,8 @@ export function Login() {
                 body: JSON.stringify({
                     email: email.trim(),
                     password: password
-                })
+                }),
+                credentials: 'include'  // IMPORTANT: Send cookies
             });
 
             const data = await response.json();
@@ -37,17 +38,14 @@ export function Login() {
                     name: `${data.firstname} ${data.lastname}`,
                     email: data.email,
                     role: data.role,
-                    token: data.token
                 }));
                 
-                localStorage.setItem('token', data.token);
-                
-                if (data.role === 'pcr') {
+                if (data.role === 'doctor') {
                     navigate('/pharmacist/dashboard');
-                } else if (data.role === 'doctor') {
-                    navigate('/doctor/dashboard');
+                } else if (data.role === 'pcr') {
+                    navigate(`/doctor/dashboard/${data.userid}`);
                 } else {
-                    navigate('/patient/dashboard');
+                    navigate(`/patient/dashboard/${data.userid}`);
                 }
             } else {
                 alert(data.error || 'Login failed');
@@ -60,15 +58,28 @@ export function Login() {
         }
     };
 
-    useState(() => {
-        const userData = localStorage.getItem('user');
-        if (userData) {
-            const user = JSON.parse(userData);
-            if (user.role === 'pharmacist') {
-                navigate('/pharmacist/dashboard');
+    useEffect(() => {
+        const checkSession = async () => {
+            try {
+                const response = await fetch('/server/includes/login.php?action=session', {
+                    credentials: 'include'
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success) {
+                        if (data.role === 'doctor') {
+                            navigate('/pharmacist/dashboard');
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Session check failed:', error);
             }
-        }
-    });
+        };
+        
+        checkSession();
+    }, [navigate]);
 
     return(
         <div className="flex justify-center items-center min-h-screen bg-gray-50 p-4">
@@ -145,7 +156,7 @@ export function Login() {
     );
 }
 
-// Simple auth utility for other components
+
 export function getCurrentUser() {
     const userData = localStorage.getItem('user');
     return userData ? JSON.parse(userData) : null;

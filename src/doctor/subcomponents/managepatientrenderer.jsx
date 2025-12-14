@@ -25,13 +25,13 @@ export function PatientViewRenderer({ data }) {
     const [contactNum, setCNum] = useState(contactnum);
     const [emailAddress, setEmailAddress] = useState(email);
     const [birthDate, setBirthdate] = useState(birthdate);
-    const [gndr, setGender] = useState(gender);
+    const [gndr, setGender] = useState("1");
 
     const isChanged = () => {
         return (
             firstName.trim() != firstname ||
             lastName.trim() != lastname ||
-            contactNum.trim() != contactnum ||
+            Number(contactNum) != contactnum ||
             emailAddress.trim() != email ||
             birthDate != birthdate ||
             gndr.trim() != gender
@@ -80,7 +80,7 @@ export function PatientViewRenderer({ data }) {
                     <Field>
                         <FieldLabel className="text-sm font-medium">Mobile Number</FieldLabel>
                         <Input
-                            type="text"
+                            type="number"
                             value={contactNum}
                             onChange={(e) => setCNum(e.target.value)}
                         />

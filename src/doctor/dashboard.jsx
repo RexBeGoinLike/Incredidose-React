@@ -1,7 +1,7 @@
 import { Header } from './../common/header'
 import { useNavigate, useParams } from 'react-router-dom';
 import { Plus, Eye } from 'lucide-react'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { DataTable } from '@/components/ui/datatable';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger, DialogHeader } from '@/components/ui/dialog';
@@ -19,36 +19,22 @@ import { PatientViewRenderer } from './subcomponents/managepatientrenderer';
 
 export function DoctorDashboard(){
 
-    const { purchaseid } = useParams();
+    const { doctorid } = useParams();
 
-    const [originalRowData, setOriginalRowData] = useState([
-        {
-            userid: 1,
-            firstname: "Marianne",
-            lastname: "Dela Cruz",
-            contactnum: "09172345890",
-            email: "marianne.delacruz@example.com",
-            password: "password123",
-            birthdate: "1998-04-12",
-            createdat: "2025-01-03 10:30:00",
-            role: "patient",
-            gender: "Female"
-        },
-        {
-            userid: 2,
-            firstname: "Jerome",
-            lastname: "Bautista",
-            contactnum: "09981234567",
-            email: "jerome.bautista@example.com",
-            password: "mypassword456",
-            birthdate: "1995-09-28",
-            createdat: "2025-01-05 14:12:00",
-            role: "patient",
-            gender: "Male"
-        }
-    ]);
+    const [originalRowData, setOriginalRowData] = useState();
+    const [rowData, setRowData] = useState();
+
     
-    const [rowData, setRowData] = useState(originalRowData);
+    useEffect(() => {
+        fetch(`/server/includes/patient_manager.php?action=getPatients&doctorid=${doctorid}`)
+        .then(res => res.json())
+        .then(data => 
+            {
+                setOriginalRowData(data);
+                setRowData(data);
+            }
+        );
+    }, []);
 
     const [colDefs, setColDefs] = useState(
         [
@@ -102,7 +88,7 @@ export function DoctorDashboard(){
                             <DialogTitle>Add a Patient</DialogTitle>
                             <DialogDescription>Add an existing patient using their email or create a new account</DialogDescription>
                         </DialogHeader>
-                        <Tabs defaultValue="search" className="w-[400px]">
+                        <Tabs defaultValue="search">
                             <TabsList>
                                 <TabsTrigger value="search">Existing Patient</TabsTrigger>
                                 <TabsTrigger value="new">New Patient</TabsTrigger>

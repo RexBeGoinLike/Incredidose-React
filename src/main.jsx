@@ -19,6 +19,7 @@ import { CreateNewPrescription } from './doctor/createnewprescription';
 import { PharmacistDashboard } from './pharmacist/dashboard';
 import { PharmacistViewPrescriptions } from './pharmacist/viewprescriptions';
 import { EditPrescriptionItems } from './pharmacist/editprescriptionitem';
+import { ProtectedRoute } from './common/protectedroute';
 
 
 function App() {  
@@ -27,19 +28,19 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
 
-        <Route path="/patient/dashboard" element={<PatientDashboard />} />
+        <Route path="/patient/dashboard/:patientid" element={<ProtectedRoute allowedRoles={['patient']}><PatientDashboard /></ProtectedRoute>} />
 
-        <Route path="/common/prescriptioninfo/:prescriptionid" element={<PrescriptionInfo />} />
-        <Route path="/common/purchaseinfo/:prescriptionid" element={<PurchaseInfo />} />
-        <Route path="/common/payments/:purchaseid" element={<Payments />} />
-        <Route path="/common/prescriptionlist/:doctorid?/:patientid" element={<ViewPrescriptions />} />
+        <Route path="/common/prescriptioninfo/:prescriptionid" element={<ProtectedRoute><PrescriptionInfo /></ProtectedRoute>} />
+        <Route path="/common/purchaseinfo/:prescriptionid" element={<ProtectedRoute><PurchaseInfo /></ProtectedRoute>} />
+        <Route path="/common/payments/:purchaseid" element={<ProtectedRoute><Payments /></ProtectedRoute>} />
+        <Route path="/common/prescriptionlist/:doctorid?/:patientid" element={<ProtectedRoute><ViewPrescriptions /></ProtectedRoute>} />
       
-        <Route path="/doctor/dashboard" element={<DoctorDashboard />} />
-        <Route path="/doctor/createnewprescription" element={<CreateNewPrescription />} />
+        <Route path="/doctor/dashboard/:doctorid" element={<ProtectedRoute><DoctorDashboard /></ProtectedRoute>} />
+        <Route path="/doctor/createnewprescription" element={<ProtectedRoute><CreateNewPrescription /></ProtectedRoute>} />
 
-        <Route path="/pharmacist/dashboard" element={<PharmacistDashboard />} />
-        <Route path="/pharmacist/viewprescriptions" element={<PharmacistViewPrescriptions />} />
-        <Route path="/pharmacist/viewprescriptions/prescriptioninfo" element={<EditPrescriptionItems />} />
+        <Route path="/pharmacist/dashboard" element={<ProtectedRoute><PharmacistDashboard /></ProtectedRoute>} />
+        <Route path="/pharmacist/viewprescriptions" element={<ProtectedRoute><PharmacistViewPrescriptions /></ProtectedRoute>} />
+        <Route path="/pharmacist/viewprescriptions/prescriptioninfo" element={<ProtectedRoute><EditPrescriptionItems /></ProtectedRoute>} />
       </Routes>
     </Router>
   );

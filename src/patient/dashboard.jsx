@@ -1,83 +1,45 @@
-import { useEffect, useState } from 'react';
-import { Header } from './../common/header'
-import { Button } from '@/components/ui/button';
-import { Clipboard, Pill, History, Eye } from 'lucide-react';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
-import { Item, ItemActions, ItemContent, ItemDescription, ItemTitle } from '@/components/ui/item';
-import { useNavigate } from 'react-router-dom';
+import { Header } from "@/common/header";
+import { Eye, Plus } from "lucide-react";
+import { useEffect, useState } from "react";
+import { DataTable } from "@/components/ui/datatable";
+import { Button } from "@/components/ui/button";
+import { useNavigate, useParams } from "react-router-dom";
 
+export function PatientDashboard(){
 
-export function PatientDashboard() {
+    const{ patientid } = useParams();
+    
+    const[rowData, setRowData] = useState();
 
-    const [showPrescriptions, setShowPrescriptions] = useState(true);
-    const [rowData, setRowData] = useState([]);
+    useEffect(() => {
+        fetch(`/server/includes/prescription_manager.php?action=getPrescriptions&patientid=${patientid}`)
+        .then(res => res.json())
+        .then(data => {
+            setRowData(data);
+        });
+    }, []);
+
 
     const navigate = useNavigate();
 
-    return (
+    const[colDefs, setColDefs] = useState([
+        { headerName: "Issuing Date", field: "dateprescribed", flex: 1.5, filter: true },
+        { headerName: "Action", flex: 0.25,
+            cellRenderer: props =>  {
+                return(
+                    <div className="flex h-1/1 items-center">
+                        <Button onClick={() => navigate(`/common/prescriptioninfo/${props.data.prescriptionid}`)} variant="ghost"><Eye /></Button>
+                    </div>
+                )
+            }
+        }
+    ]);
+
+
+    return(
         <>
             <Header />
-            <div className="flex flex-col p-10 gap-4">
-                    <div className="flex flex-row justify-between flex-wrap gap-4">
-                        <div>
-                            <Button className="grow-0"><Clipboard /> View Report</Button>
-                        </div>
-                        <div className="flex flex-row flex-wrap gap-4">
-                            <Button 
-                                variant={showPrescriptions ? "default" : "outline"}
-                                onClick={() => setShowPrescriptions(true)}
-                                ><Pill /> Show Prescriptions</Button>
-                            <Button 
-                                variant={showPrescriptions ? "outline" : "default"}
-                                onClick={() => setShowPrescriptions(false)}
-                                ><History /> Show Purchase History</Button>
-                        </div>
-                    </div>
-
-                <div>
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>{showPrescriptions ? "Prescriptions" : "Purchase History"}</CardTitle>
-                            <CardDescription></CardDescription>
-                        </CardHeader>
-                        <Separator />
-                        <CardContent className="flex flex-col pt-0 gap-4">
-                            {showPrescriptions ? 
-                                (
-                                    <>
-                                        <Item className="p-0">
-                                            <ItemContent>
-                                                <ItemTitle>Dr. John Smith</ItemTitle>
-                                                <ItemDescription>bisaya@gmail.com</ItemDescription>
-                                                <ItemDescription>09053195976</ItemDescription>
-                                            </ItemContent>
-                                            <ItemActions>
-                                                <Button onClick={() => navigate(`/common/prescriptioninfo/1`)}><Eye /> View</Button>
-                                            </ItemActions>
-                                        </Item>
-                                    </>
-                                )
-                                :
-                                (
-                                    <>
-                                        <Item className="p-0">
-                                            <ItemContent>
-                                                <ItemTitle>Teofilo Salinas</ItemTitle>
-                                                <ItemDescription>bisaya@gmail.com</ItemDescription>
-                                                <ItemDescription>09053195976</ItemDescription>
-                                            </ItemContent>
-                                            <ItemActions>
-                                                <Button onClick={() => navigate(`/common/purchaseinfo/1`)}><Eye /> View</Button>
-                                            </ItemActions>
-                                        </Item>
-                                    </>
-                                )
-                            }
-                        </CardContent>
-                    </Card>
-                </div>
-            </div>
+            <DataTable rowData={rowData} colDefs={colDefs} />
         </>
     );
 }
