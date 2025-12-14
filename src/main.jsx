@@ -8,7 +8,7 @@ import { Login } from './common/login';
 import { PrescriptionInfo } from './common/prescriptioninfo'
 import { PurchaseInfo } from './common/purchaseinfo';
 import { Payments } from './common/payments';
-import { ViewPrescriptions } from './common/viewprescriptions';
+import { ViewPrescriptions } from './doctor/viewprescriptions';
 
 // Patient UI
 import { PatientDashboard } from './patient/dashboard';
@@ -16,6 +16,9 @@ import { PatientDashboard } from './patient/dashboard';
 //Doctor UI
 import { DoctorDashboard } from './doctor/dashboard';
 import { CreateNewPrescription } from './doctor/createnewprescription';
+import { PharmacistDashboard } from './pharmacist/dashboard';
+import { PharmacistViewPrescriptions } from './pharmacist/viewprescriptions';
+import { EditPrescriptionItems } from './pharmacist/editprescriptionitem';
 
 
 function App() {  
@@ -33,6 +36,10 @@ function App() {
       
         <Route path="/doctor/dashboard" element={<DoctorDashboard />} />
         <Route path="/doctor/createnewprescription" element={<CreateNewPrescription />} />
+
+        <Route path="/pharmacist/dashboard" element={<PharmacistDashboard />} />
+        <Route path="/pharmacist/viewprescriptions" element={<PharmacistViewPrescriptions />} />
+        <Route path="/pharmacist/viewprescriptions/prescriptioninfo" element={<EditPrescriptionItems />} />
       </Routes>
     </Router>
   );

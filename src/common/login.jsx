@@ -9,25 +9,70 @@ import IncrediDoseLogo from '@/assets/logo-image.png';
 import IncrediDoseText from '@/assets/logo-text.png';
 
 export function Login() {
-
-    const[email, setEmail] = useState('');
-    const[password, setPassword] = useState('');
-    const[isLoading, setIsLoading] = useState(false); 
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [isLoading, setIsLoading] = useState(false); 
     const navigate = useNavigate();
 
     const login = async () => {
         setIsLoading(true); 
-        // replace api
+        
         try {
-            await new Promise(resolve => setTimeout(resolve, 1500)); 
-            alert(`Simulated login for: ${email}`);
-            navigate('/doctor/dashboard');
+            const response = await fetch('http://localhost/Incredidose/includes/login.php?action=login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: email.trim(),
+                    password: password
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                // Store session data in localStorage
+                localStorage.setItem('user', JSON.stringify({
+                    id: data.userid,
+                    name: `${data.firstname} ${data.lastname}`,
+                    email: data.email,
+                    role: data.role,
+                    token: data.token
+                }));
+                
+                // Store token separately for easy access
+                localStorage.setItem('token', data.token);
+                
+                // Navigate based on role
+                if (data.role === 'pharmacist') {
+                    navigate('/pharmacist/dashboard');
+                } else if (data.role === 'doctor') {
+                    navigate('/doctor/dashboard');
+                } else {
+                    navigate('/patient/dashboard');
+                }
+            } else {
+                alert(data.error || 'Login failed');
+            }
         } catch (error) {
-            alert("Login failed. Please check your credentials.");
+            alert('Login failed. Please check your credentials.');
+            console.error('Login error:', error);
         } finally {
             setIsLoading(false); 
         }
     };
+
+    // Check if already logged in on mount
+    useState(() => {
+        const userData = localStorage.getItem('user');
+        if (userData) {
+            const user = JSON.parse(userData);
+            if (user.role === 'pharmacist') {
+                navigate('/pharmacist/dashboard');
+            }
+        }
+    });
 
     return(
         <div className="flex justify-center items-center min-h-screen bg-gray-50 p-4">
@@ -67,13 +112,27 @@ export function Login() {
                         <FieldGroup className="flex flex-col gap-6">
                             <Field>
                                 <Label htmlFor="email">Email</Label>
-                                <Input id="email" type="email" placeholder="you@doctor.com" 
-                                    onChange={(e) => setEmail(e.target.value)} required disabled={isLoading}/>
+                                <Input 
+                                    id="email" 
+                                    type="email" 
+                                    placeholder="you@doctor.com" 
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)} 
+                                    required 
+                                    disabled={isLoading}
+                                />
                             </Field>
                             <Field>
                                 <Label htmlFor="password">Password</Label>
-                                <Input id="password" type="password" placeholder="••••••••" 
-                                    onChange={(e) => setPassword(e.target.value)} required disabled={isLoading}/>
+                                <Input 
+                                    id="password" 
+                                    type="password" 
+                                    placeholder="••••••••" 
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)} 
+                                    required 
+                                    disabled={isLoading}
+                                />
                             </Field> 
                             <Field className="pt-2">
                                 <Button type="submit" className="w-full" disabled={isLoading}>
@@ -88,4 +147,24 @@ export function Login() {
             </div>
         </div>
     );
+}
+
+// Simple auth utility for other components
+export function getCurrentUser() {
+    const userData = localStorage.getItem('user');
+    return userData ? JSON.parse(userData) : null;
+}
+
+export function getToken() {
+    return localStorage.getItem('token');
+}
+
+export function logout() {
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+    window.location.href = '/login';
+}
+
+export function isLoggedIn() {
+    return !!localStorage.getItem('user');
 }

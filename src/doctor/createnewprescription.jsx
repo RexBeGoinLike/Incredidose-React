@@ -14,27 +14,28 @@ export function CreateNewPrescription(props){
     const location = useLocation();
 
     const [originalRowData, setOriginalRowData] = useState([location.state.data]);
-    console.log(originalRowData)
+    
+    const tempRowData = originalRowData;
 
     const [rowData, setRowData] = useState([location.state.data]);
 
     const editData = (data) => {
-        const filteredRow = originalRowData.filter(item => item.id != data.id);
-        const newArray = [...filteredRow, data];
-        setOriginalRowData(newArray);
-        setRowData(newArray)
+        setOriginalRowData(prev => prev.map(item => item.id != data.id ? item : data));
+        setRowData(prev => prev.map(item => item.id != data.id ? item : data));
 
     }
 
     const deleteData = (id, e) => {
         e.preventDefault();
-        if (originalRowData.length <= 1){
-            alert("Unable to delete")
-        } else  {
-            const newArray = originalRowData.filter(item => item.id != id);
-            setOriginalRowData(newArray);
-            setRowData(newArray);
-        }
+   
+        setOriginalRowData(prev => {
+            if(prev.length <= 1)
+                alert("Unable to Delete");
+            else
+                prev.filter(item => item.id != id);
+        });
+
+        setRowData(originalRowData);
     }
 
     const [colDefs, setColDefs] = useState([

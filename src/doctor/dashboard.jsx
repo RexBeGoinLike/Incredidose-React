@@ -73,7 +73,7 @@ export function DoctorDashboard(){
         const[patientData, setPatientData] = useState([]);
 
         function searchFunction(){
-
+            
         }
 
         return(
