@@ -6,7 +6,7 @@ import { Pencil } from "lucide-react";
 import { FieldGroup, FieldSet, Field, FieldLabel } from "@/components/ui/field";
 
 export function AddPatientDialog({onSave, props}) {
-
+    
     const {
         userid,
         firstname,
@@ -20,15 +20,13 @@ export function AddPatientDialog({onSave, props}) {
         gender
     } = props.data;
 
-    const [userFirstName, setUserFirstName] = useState(firstname);
-    const [userLastName, setUserLastName] = useState(lastname);
-    const [userContactNum, setUserContactNum] = useState(contactnum);
-    const [userEmail, setUserEmail] = useState(email);
-    const [userPassword, setUserPassword] = useState(password);
-    const [userBirthdate, setUserBirthdate] = useState(birthdate);
-    const [userGender, setUserGender] = useState(gender);
-
-    const [open, setOpen] = useState(false);
+    const [userFirstName, setUserFirstName] = useState(firstname ? firstname : "");
+    const [userLastName, setUserLastName] = useState(lastname ? lastname : "");
+    const [userContactNum, setUserContactNum] = useState(contactnum ? contactnum : "");
+    const [userEmail, setUserEmail] = useState(email ? email : "");
+    const [userPassword, setUserPassword] = useState(password ? password : "");
+    const [userBirthdate, setUserBirthdate] = useState(birthdate ? birthdate : "");
+    const [userGender, setUserGender] = useState(gender ? gender : "");
 
     const isChanged = () => {
         return (
@@ -61,24 +59,10 @@ export function AddPatientDialog({onSave, props}) {
         if (onSave) {
             onSave(userData);
         }
-
-        setOpen(false);
     }
 
     return (
-        <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger className="flex h-1/1 items-center justify-center" asChild>
-            <Button variant="ghost"><Pencil /></Button>
-        </DialogTrigger>
-
-        <DialogContent className="max-w-xl">
-            <DialogHeader>
-                <DialogTitle>Edit User</DialogTitle>
-                <DialogDescription>
-                    Update user information. ID and role cannot be changed.
-                </DialogDescription>
-            </DialogHeader>
-
+        <>
             <form onSubmit={handleSubmit}>
                 <FieldGroup className="grid grid-cols-2 gap-6">
                     <FieldSet className="flex flex-col gap-4">
@@ -148,20 +132,12 @@ export function AddPatientDialog({onSave, props}) {
                         />
                     </Field>
 
-                    <div className="col-span-2 text-sm text-gray-500 border-t pt-4">
-                        <p><strong>User ID:</strong> {userid}</p>
-                        <p><strong>Role:</strong> {role}</p>
-                        <p><strong>Account Created:</strong> {createdat}</p>
-                    </div>
-
                     <Button className="col-span-2" type="submit" disabled={!isChanged()}>
                         <Pencil />Save
                     </Button>
 
                 </FieldGroup>
             </form>
-
-        </DialogContent>
-        </Dialog>
+        </>
     );
 }

@@ -3,10 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use } from 'react';
 import { Loader2 } from 'lucide-react'; 
 import IncrediDoseLogo from '@/assets/logo-image.png';
 import IncrediDoseText from '@/assets/logo-text.png';
+import { useAuth } from './auth';
 
 export function Login() {
     const [email, setEmail] = useState('');
@@ -14,49 +15,11 @@ export function Login() {
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
-    const login = async () => {
-        setIsLoading(true);
-        
-        try {
-            const response = await fetch('/server/includes/login.php?action=login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    email: email.trim(),
-                    password: password
-                }),
-                credentials: 'include'  // IMPORTANT: Send cookies
-            });
+    const { login } = useAuth();
 
-            const data = await response.json();
-
-            if (data.success) {
-                localStorage.setItem('user', JSON.stringify({
-                    id: data.userid,
-                    name: `${data.firstname} ${data.lastname}`,
-                    email: data.email,
-                    role: data.role,
-                }));
-                
-                if (data.role === 'doctor') {
-                    navigate('/pharmacist/dashboard');
-                } else if (data.role === 'pcr') {
-                    navigate(`/doctor/dashboard/${data.userid}`);
-                } else {
-                    navigate(`/patient/dashboard/${data.userid}`);
-                }
-            } else {
-                alert(data.error || 'Login failed');
-            }
-        } catch (error) {
-            alert('Login failed. Please check your credentials.');
-            console.error('Login error:', error);
-        } finally {
-            setIsLoading(false);
-        }
-    };
+    function handleSubmit(){
+        login(email, password);
+    }
 
     useEffect(() => {
         const checkSession = async () => {
@@ -68,8 +31,12 @@ export function Login() {
                 if (response.ok) {
                     const data = await response.json();
                     if (data.success) {
-                        if (data.role === 'doctor') {
+                        if (data.role === 'pharmacist') {
                             navigate('/pharmacist/dashboard');
+                        } else if (data.role === 'doctor') {
+                            navigate(`/doctor/dashboard/${data.userid}`);
+                        } else {
+                            navigate(`/patient/dashboard/${data.userid}`);
                         }
                     }
                 }
@@ -114,7 +81,6 @@ export function Login() {
                     
                     <form onSubmit={(e) => {
                         e.preventDefault();
-                        login();
                     }}>
                         <FieldGroup className="flex flex-col gap-6">
                             <Field>
@@ -142,7 +108,7 @@ export function Login() {
                                 />
                             </Field> 
                             <Field className="pt-2">
-                                <Button type="submit" className="w-full" disabled={isLoading}>
+                                <Button type="submit" className="w-full" onClick={handleSubmit} disabled={isLoading}>
                                     {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                                     {isLoading ? 'Authenticating...' : 'Sign In'}
                                 </Button>
@@ -154,24 +120,4 @@ export function Login() {
             </div>
         </div>
     );
-}
-
-
-export function getCurrentUser() {
-    const userData = localStorage.getItem('user');
-    return userData ? JSON.parse(userData) : null;
-}
-
-export function getToken() {
-    return localStorage.getItem('token');
-}
-
-export function logout() {
-    localStorage.removeItem('user');
-    localStorage.removeItem('token');
-    window.location.href = '/login';
-}
-
-export function isLoggedIn() {
-    return !!localStorage.getItem('user');
 }

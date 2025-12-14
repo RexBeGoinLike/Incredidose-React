@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Eye } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { FieldGroup, FieldSet, Field, FieldLabel } from "@/components/ui/field";
+import { useAuth } from "@/common/auth";
 
 export function PatientViewRenderer({ data }) {
     const {
@@ -25,8 +26,9 @@ export function PatientViewRenderer({ data }) {
     const [contactNum, setCNum] = useState(contactnum);
     const [emailAddress, setEmailAddress] = useState(email);
     const [birthDate, setBirthdate] = useState(birthdate);
-    const [gndr, setGender] = useState("1");
+    const [gndr, setGender] = useState(gender);
 
+    const { user } = useAuth();
     const isChanged = () => {
         return (
             firstName.trim() != firstname ||
@@ -34,7 +36,7 @@ export function PatientViewRenderer({ data }) {
             Number(contactNum) != contactnum ||
             emailAddress.trim() != email ||
             birthDate != birthdate ||
-            gndr.trim() != gender
+            gndr != gender
         );
     };
 
@@ -54,7 +56,7 @@ export function PatientViewRenderer({ data }) {
             </DialogDescription>
             </DialogHeader>
 
-            <Button onClick={() => {navigate(`/common/prescriptionlist/1/${userid}`)}} className="mb-4">Manage Prescriptions</Button>
+            <Button onClick={() => {navigate(`/doctor/prescriptionlist/${user.userid}/${userid}`)}} className="mb-4">Manage Prescriptions</Button>
 
             <form>
                 <FieldGroup className="grid grid-cols-2 gap-6">

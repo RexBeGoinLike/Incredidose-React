@@ -15,7 +15,6 @@ export function CreateNewPrescription(props){
 
     const [originalRowData, setOriginalRowData] = useState([location.state.data]);
     
-    const tempRowData = originalRowData;
 
     const [rowData, setRowData] = useState([location.state.data]);
 

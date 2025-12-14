@@ -6,7 +6,6 @@ import { useState, useEffect } from 'react';
 import { Separator } from '@/components/ui/separator';
 import { DataTable } from '@/components/ui/datatable';
 import { Button } from '@/components/ui/button';
-import { getToken } from './login';
 
 export function PrescriptionInfo(){
     const { prescriptionid } = useParams();

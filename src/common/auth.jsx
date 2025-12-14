@@ -1,9 +1,12 @@
 // auth.js (or auth.jsx)
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export function useAuth() {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
+
+    const navigate = useNavigate();
 
     const checkSession = async () => {
         try {
@@ -51,7 +54,7 @@ export function useAuth() {
         });
         setUser(null);
         localStorage.removeItem('user');
-        window.location.href = '/';
+        navigate('/')
     };
 
     useEffect(() => {

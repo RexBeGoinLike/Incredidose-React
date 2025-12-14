@@ -13,9 +13,37 @@ import {
 } from "@/components/ui/tabs"
 
 import { Input } from '@/components/ui/input';
-import { Separator } from '@radix-ui/react-separator';
 import { Label } from '@radix-ui/react-label';
 import { PatientViewRenderer } from './subcomponents/managepatientrenderer';
+import { AddPatientDialog } from './subcomponents/addexistingpatient';
+import { AddNewPatientDialog } from './subcomponents/addnewpatient';
+
+function AddExistingPatient(){
+
+    const[patientData, setPatientData] = useState();
+
+    function emailSearchFunction(value){
+        fetch(`/server/includes/patient_manager.php?action=getPatientByEmail&email=${value}`)
+        .then(res => res.json())
+        .then(data => {setPatientData(data)});
+    }
+
+    console.log(patientData);
+
+    return(
+        <>
+            <Label className="text-sm" for="searchemail">Search</Label>
+            <Input id="searchemail" placeholder="Enter a patient's email"  
+                onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                        emailSearchFunction(e.target.value.trim());
+                    }
+            }}></Input>
+            
+        </>
+    );
+
+}
 
 export function DoctorDashboard(){
 
@@ -23,7 +51,6 @@ export function DoctorDashboard(){
 
     const [originalRowData, setOriginalRowData] = useState();
     const [rowData, setRowData] = useState();
-
     
     useEffect(() => {
         fetch(`/server/includes/patient_manager.php?action=getPatients&doctorid=${doctorid}`)
@@ -53,28 +80,19 @@ export function DoctorDashboard(){
         setRowData(originalRowData.filter(item => item.firstname.includes(value.trim()) || item.lastname.includes(value.trim()) || item.userid == value.trim()));
     };
 
-    function AddExistingPatient(){
-        
-        
-        const[patientData, setPatientData] = useState([]);
-
-        function searchFunction(){
-            
-        }
-
-        return(
-            <>
-                <Label className="text-sm" for="searchemail">Search</Label>
-                <Input id="searchemail" placeholder="Enter a patient's email"  
-                    onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                            searchFunction;
-                        }
-                }}></Input>
-            </>
-        );
+    function handleCreatePatient(data){
+        fetch(`/server/includes/patient_manager?action=addPatient`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(res => res.json())
+        .then(data => navigate(`/doctor/prescriptionlist/${doctorid}/${data.patientid}`));
 
     }
+
     return(
         <>
             <Header />
@@ -97,7 +115,7 @@ export function DoctorDashboard(){
                                 <AddExistingPatient />
                             </TabsContent>
                             <TabsContent value="new">
-
+                                <AddNewPatientDialog onSave={(data) => handleCreatePatient(data)}/>
                             </TabsContent>
                         </Tabs>
                     </DialogContent>
