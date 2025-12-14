@@ -36,12 +36,12 @@ function App() {
         <Route path="/common/payments/:purchaseid" element={<ProtectedRoute><Payments /></ProtectedRoute>} />
       
         <Route path="/doctor/dashboard/:doctorid" element={<ProtectedRoute><DoctorDashboard /></ProtectedRoute>} />
-        <Route path="/doctor/createnewprescription" element={<ProtectedRoute><CreateNewPrescription /></ProtectedRoute>} />
+        <Route path="/doctor/createnewprescription/:patientid" element={<ProtectedRoute><CreateNewPrescription /></ProtectedRoute>} />
         <Route path="/doctor/prescriptionlist/:doctorid/:patientid" element={<ProtectedRoute><ViewPrescriptions /></ProtectedRoute>} />
 
         <Route path="/pharmacist/dashboard" element={<ProtectedRoute><PharmacistDashboard /></ProtectedRoute>} />
-        <Route path="/pharmacist/viewprescriptions" element={<ProtectedRoute><PharmacistViewPrescriptions /></ProtectedRoute>} />
-        <Route path="/pharmacist/viewprescriptions/prescriptioninfo" element={<ProtectedRoute><EditPrescriptionItems /></ProtectedRoute>} />
+        <Route path="/pharmacist/viewprescriptions/:patientid" element={<ProtectedRoute><PharmacistViewPrescriptions /></ProtectedRoute>} />
+        <Route path="/pharmacist/prescriptioninfo/:patientid/:prescriptionid" element={<ProtectedRoute><EditPrescriptionItems /></ProtectedRoute>} />
       </Routes>
     </Router>
   );

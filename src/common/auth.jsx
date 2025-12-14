@@ -33,19 +33,18 @@ export function useAuth() {
     };
 
     const login = async (email, password) => {
-        const response = await fetch('/server/includes/login.php?action=login', {
+        await fetch('/server/includes/login.php?action=login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password }),
             credentials: 'include'
-        });
-        
-        const data = await response.json();
-        if (data.success) {
+        })
+        .then(res => res.json())
+        .then(data => {
             setUser(data);
             localStorage.setItem('user', JSON.stringify(data));
-        }
-        return data;
+            return data;
+        })
     };
 
     const logout = async () => {

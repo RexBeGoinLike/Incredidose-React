@@ -31,9 +31,7 @@ export function PatientViewRenderer({ data }) {
             firstName.trim() != firstname ||
             lastName.trim() != lastname ||
             Number(contactNum) != contactnum ||
-            emailAddress.trim() != email ||
-            birthDate != birthdate ||
-            gndr != gender
+            emailAddress.trim() != email
         );
     };
 

@@ -1,40 +1,31 @@
 import { Header } from "@/common/header";
 import { Eye, Plus } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DataTable } from "@/components/ui/datatable";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { AddPrescriptionDialog } from "@/doctor/subcomponents/addprescriptionitem";
 
-export function PharmacistViewPrescriptions(props){
+export function PharmacistViewPrescriptions(){
 
-    const{patientid, doctorid} = props;
+    const{ patientid } = useParams();
 
 
-    const [originalRowData, setOriginalRowData] = useState([
-        {
-            prescriptionid: 42,
-            dateprescribed: "2025-10-15 14:30:00",
-            validperiod: "2025-11-15",
-            patientid: 21,
-            doctorid: 41,
-            patientName: "Juan Cruz",
-            doctorName: "Drake Mitchell",
-        },
-        {
-            prescriptionid: 43,
-            dateprescribed: "2025-10-20 09:15:00",
-            validperiod: "2025-11-20",
-            patientid: 22,
-            doctorid: 42,
-            patientName: "Maria Santos",
-            doctorName: "Olivia Johnson",
-        }
-    ]);
+    const [originalRowData, setOriginalRowData] = useState();
     
-    const[rowData, setRowData] = useState(originalRowData);
+    const[rowData, setRowData] = useState();
+
+    useEffect(() => {
+        fetch(`/server/includes/prescription_manager.php?action=getPrescriptionsPharmacist&patientid=${patientid}`)
+        .then(res => res.json())
+        .then(data => {
+            setOriginalRowData(data);
+            setRowData(data);
+        })
+    }, [])
 
     const navigate = useNavigate();
+    
 
     const[colDefs, setColDefs] = useState([
         { headerName: "Issuing Date", field: "dateprescribed", flex: 1.5, filter: true },
@@ -42,7 +33,7 @@ export function PharmacistViewPrescriptions(props){
             cellRenderer: props =>  {
                 return(
                     <div className="flex h-1/1 items-center">
-                        <Button onClick={() => navigate('/pharmacist/viewprescriptions/prescriptioninfo ')} variant="ghost"><Eye /></Button>
+                        <Button onClick={() => navigate(`/pharmacist/prescriptioninfo/${patientid}/${props.data.prescriptionid}`)} variant="ghost"><Eye /></Button>
                     </div>
                 )
             }

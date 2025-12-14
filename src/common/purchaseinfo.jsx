@@ -1,21 +1,27 @@
 import { Header } from './header'
 import { useNavigate, useParams } from 'react-router-dom';
 import { Receipt } from 'lucide-react'
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { DataTable } from '@/components/ui/datatable';
 import { Button } from '@/components/ui/button';
 
 export function PurchaseInfo(){
 
-    const { purchaseid } = useParams();
-    const [originalRowData, setOriginalRowData] = useState(
-        [
-            {name: "Ibuprofen", brand: "Alaxan", quantity: 10, dosage: 20, price: 100},
-            {name: "Paracetamol", brand: "Generic", quantity: 10, dosage: 20, price: 200}
-        ]
-    )
+    const { prescriptionid } = useParams();
+    const [originalRowData, setOriginalRowData] = useState();
+    const [rowData, setRowData] = useState();
+    const [pinnedBottomRowData, setPinnedBottomRowData] = useState();
 
-    const [rowData, setRowData] = useState(originalRowData);
+    useEffect(() => {
+        fetch(`/server/includes/purchase_manager.php?action=getPurchasesByPrescription&prescriptionid=${prescriptionid}`)
+        .then(res => res.json())
+        .then(data => {
+            console.log(data)
+            setOriginalRowData(data);
+            setRowData(data)
+            setPinnedBottomRowData([{name: "Total", price: [data].reduce((sum, item) => sum + item.price, 0)}])
+        });
+    }, [])
 
     const [colDefs, setColDefs] = useState(
         [
@@ -23,12 +29,11 @@ export function PurchaseInfo(){
             { headerName: "Brand", field: "brand", flex: 2.5, filter: true  },
             { headerName: "Quantity", field: "quantity", flex: 1, filter: true },
             { headerName: "Dosage", field: "dosage", flex: 1, filter: true  },
-            { headerName: "Price (Php)", field: "price", flex: 1, filter: true  }
+            { headerName: "Unit Price (Php)", field: "unitprice", flex: 1, filter: true  }
         ]
     );
     
-    const pinnedBottomRowData = [{name: "Total", price: originalRowData.reduce((sum, item) => sum + item.price, 0)}]
-
+    
     const navigate = useNavigate();
 
     const searchFunction = (value) => {
