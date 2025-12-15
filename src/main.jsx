@@ -29,15 +29,15 @@ function App() {
         <Route path="/login?" element={<Login />} />
         
 
-        <Route path="/patient/dashboard/:patientid" element={<ProtectedRoute allowedRoles={['patient']}><PatientDashboard /></ProtectedRoute>} />
+        <Route path="/patient/dashboard" element={<ProtectedRoute allowedRoles={['ptnt']}><PatientDashboard /></ProtectedRoute>} />
 
         <Route path="/common/prescriptioninfo/:prescriptionid" element={<ProtectedRoute><PrescriptionInfo /></ProtectedRoute>} />
         <Route path="/common/purchaseinfo/:prescriptionid" element={<ProtectedRoute><PurchaseInfo /></ProtectedRoute>} />
         <Route path="/common/payments/:purchaseid" element={<ProtectedRoute><Payments /></ProtectedRoute>} />
       
-        <Route path="/doctor/dashboard/:doctorid" element={<ProtectedRoute><DoctorDashboard /></ProtectedRoute>} />
+        <Route path="/doctor/dashboard" element={<ProtectedRoute><DoctorDashboard /></ProtectedRoute>} />
         <Route path="/doctor/createnewprescription/:patientid" element={<ProtectedRoute><CreateNewPrescription /></ProtectedRoute>} />
-        <Route path="/doctor/prescriptionlist/:doctorid/:patientid" element={<ProtectedRoute><ViewPrescriptions /></ProtectedRoute>} />
+        <Route path="/doctor/prescriptionlist/:patientid" element={<ProtectedRoute><ViewPrescriptions /></ProtectedRoute>} />
 
         <Route path="/pharmacist/dashboard" element={<ProtectedRoute><PharmacistDashboard /></ProtectedRoute>} />
         <Route path="/pharmacist/viewprescriptions/:patientid" element={<ProtectedRoute><PharmacistViewPrescriptions /></ProtectedRoute>} />

@@ -17,7 +17,7 @@ export function Login() {
 
     const { login } = useAuth();
 
-
+    //Check if session has not expired
     useEffect(() => {
         const checkSession = async () => {
             try {
@@ -31,9 +31,9 @@ export function Login() {
                         if (data.role === 'pharmacist') {
                             navigate('/pharmacist/dashboard');
                         } else if (data.role === 'doctor') {
-                            navigate(`/doctor/dashboard/${data.userid}`);
+                            navigate(`/doctor/dashboard`);
                         } else {
-                            navigate(`/patient/dashboard/${data.userid}`);
+                            navigate(`/patient/dashboard`);
                         }
                     }
                 }

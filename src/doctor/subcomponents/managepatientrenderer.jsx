@@ -71,7 +71,7 @@ export function PatientViewRenderer({ data }) {
             </DialogDescription>
             </DialogHeader>
 
-            <Button onClick={() => {navigate(`/doctor/prescriptionlist/${user.userid}/${userid}`)}} className="mb-4">Manage Prescriptions</Button>
+            <Button onClick={() => {navigate(`/doctor/prescriptionlist/${userid}`)}} className="mb-4">Manage Prescriptions</Button>
 
             <form>
                 <FieldGroup className="grid grid-cols-2 gap-6">
