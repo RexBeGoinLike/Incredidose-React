@@ -1,4 +1,5 @@
 import { Header } from "@/common/header";
+import { FileText, ArrowLeft } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState } from "react";
 import { DataTable } from "@/components/ui/datatable";
@@ -8,6 +9,7 @@ import { Eye, Plus, Pencil } from "lucide-react";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { AddUserDialog } from "./subcomponents/adduser";
 import { EditUserDialog } from "./subcomponents/edituser";
+import { ViewLogs } from "./viewlogs";
 
 export function AdminDashboard() {
     const navigate = useNavigate();
@@ -63,16 +65,14 @@ export function AdminDashboard() {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     const handleAddUser = (newUser) => {
-        // Add to row data
+        
         setRowData(prev => [...prev, newUser]);
         setOriginalRowData(prev => [...prev, newUser]);
-        
-        // Close dialog
+           
         setIsDialogOpen(false);
     };
 
     const handleEditUser = (updatedUser) => {
-        // Update the user in rowData
         setRowData(prev => prev.map(user => 
             user.userid === updatedUser.userid ? updatedUser : user
         ));
@@ -146,7 +146,14 @@ export function AdminDashboard() {
                         <TabsTrigger value="doctor">Doctor</TabsTrigger>
                     </TabsList>
                     
-                    {/* Add User Button and Dialog */}
+                    <Button 
+                            variant="outline" 
+                            onClick={() => navigate('/admin/logs')}
+                        >
+                            <FileText className="mr-2 h-4 w-4" />
+                            View Logs
+                        </Button>
+
                     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                         <DialogTrigger asChild>
                             <Button>

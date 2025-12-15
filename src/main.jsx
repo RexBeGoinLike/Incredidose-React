@@ -21,6 +21,7 @@ import { PharmacistDashboard } from './pharmacist/dashboard';
 import { PharmacistViewPrescriptions } from './pharmacist/viewprescriptions';
 import { EditPrescriptionItems } from './pharmacist/editprescriptionitem';
 import { AdminDashboard } from './admin/dashboard';
+import { ViewLogs } from './admin/viewlogs';
 
 
 
@@ -45,9 +46,7 @@ function App() {
         <Route path="/pharmacist/prescriptioninfo/:patientid/:prescriptionid" element={<ProtectedRoute><EditPrescriptionItems /></ProtectedRoute>} />
 
         <Route path="/admin/dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
-        <Route path="/pharmacist/dashboard" element={<ProtectedRoute allowedRoles={['pharmacist', 'admn']}><PharmacistDashboard /></ProtectedRoute>} />
-        <Route path="/pharmacist/viewprescriptions/:patientid" element={<ProtectedRoute allowedRoles={['pharmacist', 'admn']}><PharmacistViewPrescriptions /></ProtectedRoute>} />
-        <Route path="/pharmacist/prescriptioninfo/:patientid/:prescriptionid" element={<ProtectedRoute allowedRoles={['pharmacist', 'admn']}><EditPrescriptionItems /></ProtectedRoute>} />
+        <Route path="/admin/logs" element={<ProtectedRoute><ViewLogs /></ProtectedRoute>} />
       </Routes>
     </Router>
   )
