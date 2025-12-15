@@ -52,14 +52,15 @@ export function CreateNewPrescription(){
         setOriginalRowData(newArray);
         setRowData(newArray);
     }
+    
 
     const handleSubmit = () => {
-        fetch(`/server/includes/prescription_manager.php?action=addPrescription&patientid=${patientid}&doctorid=${user.userid}`)
+        fetch(`/server/includes/prescription_manager.php?action=addPrescription&patientid=${patientid}`)
         .then(res => res.json())
         .then(data => {
             originalRowData.map(prescriptionitems => {
                 prescriptionitems['prescriptionid'] = data.id;
-                  fetch(`/server/includes/prescriptionitem_manager?action=addPrescriptionItem`, {
+                  fetch(`/server/includes/prescriptionitem_manager.php?action=addPrescriptionItem`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

@@ -96,24 +96,6 @@ export function ViewLogs() {
                     </div>
                 </div>
 
-                {/* Filters section */}
-                <div className="mb-6 p-4 bg-muted/30 rounded-lg">
-                    <div className="flex items-center justify-between">
-                        <h3 className="font-medium">Filters</h3>
-                        <div className="flex gap-2">
-                            <Button variant="outline" size="sm">
-                                Today
-                            </Button>
-                            <Button variant="outline" size="sm">
-                                Last 7 Days
-                            </Button>
-                            <Button variant="outline" size="sm">
-                                All Time
-                            </Button>
-                        </div>
-                    </div>
-                </div>
-
                 <div className="border rounded-lg">
                     <DataTable 
                         rowData={logsData} 

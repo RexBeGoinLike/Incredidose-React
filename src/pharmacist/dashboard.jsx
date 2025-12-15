@@ -8,31 +8,7 @@ import { Eye } from "lucide-react";
 
 export function PharmacistDashboard(){
     const navigate = useNavigate();
-    const [originalRowData, setOriginalRowData] = useState([
-        {
-            userid: 1,
-            firstname: "Marianne",
-            lastname: "Dela Cruz",
-            contactnum: "09172345890",
-            email: "marianne.delacruz@example.com",
-            password: "password123",
-            birthdate: "1998-04-12",
-            createdat: "2025-01-03 10:30:00",
-            role: "patient",
-            gender: "Female"
-        },
-        {
-            userid: 2,
-            firstname: "Jerome",
-            lastname: "Bautista",
-            contactnum: "09981234567",
-            email: "jerome.bautista@example.com",
-            password: "mypassword456",
-            birthdate: "1995-09-28",
-            createdat: "2025-01-05 14:12:00",
-            role: "patient",
-            gender: "Male"
-        }
+    const [originalPatientData, setOriginalPatientData] = useState([
     ]);
     
     const searchFunction = (value) => {
@@ -50,12 +26,24 @@ export function PharmacistDashboard(){
         });
     }, []);
 
+    const [doctorData, setDoctorData] = useState();
+
+    useEffect(() => {
+        fetch('/server/includes/doctor_manager.php')
+        .then(res => res.json())
+        .then(data => {
+            setDoctorData(data);
+            setOriginalRowData(data);
+        });
+    }, []);
+
     const [doctorColDefs, setDoctorColDefs] = useState(
         [
             { headerName: "Name", flex: 1, filter: true,
                 cellRenderer: props => { return props.data.firstname + " " + props.data.lastname;}
             },
             { headerName: "Contact Info", field: "contactnum", flex: 1, filter: true  },
+            { headerName: "Specialization", field: "specialization", flex: 1, filter: true  },
             { headerName: "Email", field: "email", flex: 1, filter: true }
         ]
     );
@@ -79,7 +67,7 @@ export function PharmacistDashboard(){
         <>
             <Header />
             <Tabs defaultValue="patient" >
-                <div className="p-10 -mb-10">
+                <div className="pt-3 pl-10 pr-10">
                     <TabsList >
                         <TabsTrigger value="patient">Patient</TabsTrigger>
                         <TabsTrigger value="doctor">Doctor</TabsTrigger>
@@ -89,7 +77,7 @@ export function PharmacistDashboard(){
                     <DataTable rowData={patientData} colDefs={patientColDefs} searchFunction={searchFunction} searchPlaceholder={"Enter a patient's name..."} />
                 </TabsContent>
                 <TabsContent value="doctor">
-                    <DataTable rowData={patientData} colDefs={doctorColDefs} searchFunction={searchFunction} searchPlaceholder={"Enter a doctor's name..."}/>
+                    <DataTable rowData={doctorData} colDefs={doctorColDefs} searchFunction={searchFunction} searchPlaceholder={"Enter a doctor's name..."}/>
                 </TabsContent>
             </Tabs>
         </>

@@ -139,11 +139,13 @@ export function AdminDashboard() {
     return (
         <>
             <Header />
-            <Tabs defaultValue="patient">
-                <div className="flex justify-between items-center mb-4">
+            <Tabs defaultValue="doctor">
+
+                <div className="flex justify-start gap-4 items-center pt-5 pl-10 pr-10">
                     <TabsList>
-                        <TabsTrigger value="patient">Patient</TabsTrigger>
                         <TabsTrigger value="doctor">Doctor</TabsTrigger>
+                        <TabsTrigger value="pharmacist">Pharmacist</TabsTrigger>
+                        <TabsTrigger value="patient">Patient</TabsTrigger>
                     </TabsList>
                     
                     <Button 
@@ -154,27 +156,22 @@ export function AdminDashboard() {
                             View Logs
                         </Button>
 
-                    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                        <DialogTrigger asChild>
-                            <Button>
-                                <Plus className="mr-2 h-4 w-4" />
-                                Add User
-                            </Button>
-                        </DialogTrigger>
-                        <AddUserDialog
-                            isOpen={isDialogOpen}
-                            onClose={() => setIsDialogOpen(false)}
-                            onSubmit={handleAddUser}
-                            existingUsers={rowData}
-                        />
-                    </Dialog>
+                    <AddUserDialog
+                        isOpen={isDialogOpen}
+                        onClose={() => setIsDialogOpen(false)}
+                        onSubmit={handleAddUser}
+                        existingUsers={rowData}
+                    />
                 </div>
                 
-                <TabsContent value="patient">
-                    <DataTable rowData={rowData.filter(user => user.role === "patient")} colDefs={patientColDefs} />
-                </TabsContent>
                 <TabsContent value="doctor">
                     <DataTable rowData={rowData.filter(user => user.role === "doctor")} colDefs={doctorColDefs} />
+                </TabsContent>
+                <TabsContent value="pharmacist">
+                    <DataTable rowData={rowData.filter(user => user.role === "pharmacist")} colDefs={doctorColDefs} />
+                </TabsContent>
+                <TabsContent value="patient">
+                    <DataTable rowData={rowData.filter(user => user.role === "ptnt")} colDefs={doctorColDefs} />
                 </TabsContent>
             </Tabs>
         </>
