@@ -11,13 +11,17 @@ import { Input } from '@/components/ui/input';
 export function EditPrescriptionItems() {
     const { prescriptionid, patientid } = useParams();
     const [items, setItems] = useState([]);
+    const [itemsFilter, setItemsFilter] = useState([]);
     const [cart, setCart] = useState([]);
     const [cartOpen, setCartOpen] = useState(false);
 
     useEffect(() => {
         fetch(`/server/includes/prescriptionitem_manager.php?action=getPrescriptionItems&prescriptionid=${prescriptionid}`)
             .then(res => res.json())
-            .then(data => setItems(data));
+            .then(data => {
+                setItems(data)
+                setItemsFilter(data)
+            });
     }, []);
 
     const addToCart = (data) => {
@@ -28,7 +32,8 @@ export function EditPrescriptionItems() {
             ...data,
             name: originalItem.name,
             brand: originalItem.brand,
-            quantity: originalItem.available,
+            quantity: 1,
+            max: originalItem.available,
             totalprice: (data.unitprice || 0) * (data.quantity || 1)
         };
         
@@ -68,8 +73,8 @@ export function EditPrescriptionItems() {
     };
 
     const columns = [
-        { headerName: "Name", field: "name", flex: 1.5 },
-        { headerName: "Brand", field: "brand", flex: 1.5 },
+        { headerName: "Name", field: "name", flex: 1 },
+        { headerName: "Brand", field: "brand", flex: 1 },
         { headerName: "Available", field: "available", flex: 0.5 },
         { headerName: "Quantity", field: "quantity", flex: 0.5 },
         { headerName: "Dosage", field: "dosage", flex: 0.5 },
@@ -148,14 +153,7 @@ export function EditPrescriptionItems() {
     ];
 
     const searchFunction = (value) => {
-        setItems(prev => {
-            const original = JSON.parse(localStorage.getItem('originalItems') || '[]');
-            if (!value.trim()) return original;
-            return original.filter(item => 
-                item.name.toLowerCase().includes(value.toLowerCase()) || 
-                item.brand.toLowerCase().includes(value.toLowerCase())
-            );
-        });
+        setItemsFilter(items.filter(item => item.name.includes(value) || item.brand.includes(value)));
     };
 
     useEffect(() => {
@@ -192,7 +190,7 @@ export function EditPrescriptionItems() {
     return (
         <>
             <Header />
-            <DataTable rowData={items} colDefs={columns} searchFunction={searchFunction} searchPlaceholder="Enter brand or medicine name...">
+            <DataTable rowData={itemsFilter} colDefs={columns} searchFunction={searchFunction} searchPlaceholder="Enter brand or medicine name...">
                 <Dialog open={cartOpen} onOpenChange={setCartOpen}>
                     <DialogTrigger asChild>
                         <Button>
@@ -216,6 +214,9 @@ export function EditPrescriptionItems() {
                                 <div className="space-y-4 max-h-96 overflow-y-auto">
                                     {cart.map((item, index) => (
                                         <div key={index} className="border p-4 rounded">
+
+                                                
+
                                             <div className="flex justify-between mb-3">
                                                 <div>
                                                     <h4 className="font-medium">{item.name}</h4>
@@ -227,6 +228,17 @@ export function EditPrescriptionItems() {
                                             </div>
                                             
                                             <div className="grid grid-cols-3 gap-4">
+
+                                                <div>
+                                                    <label className="text-xs">Brand</label>
+                                                    <Input
+                                                        type="text"
+                                                        value={item.brand}
+                                                        onChange={(e) => updateCart(index, 'brand', e.target.value)}
+                                                        disabled={item.substitutions}
+                                                        required />
+                                                </div>
+
                                                 <div>
                                                     <label className="text-xs">Unit Price</label>
                                                     <Input
@@ -235,29 +247,30 @@ export function EditPrescriptionItems() {
                                                         onChange={(e) => updateCart(index, 'unitprice', e.target.value)}
                                                     />
                                                 </div>
-                                                
+                  
                                                 <div>
                                                     <label className="text-xs">Quantity</label>
                                                     <div className="flex gap-1">
                                                         <Button variant="outline" size="sm" onClick={() => updateCart(index, 'quantity', item.quantity - 1)}>
-                                                            <Minus className="h-3 w-3" />
+                                                            <Minus className="h-3 w-2" />
                                                         </Button>
                                                         <Input
                                                             value={item.quantity}
                                                             min={1}
-                                                            max={item.quantity}
+                                                            max={item.max}
                                                             onChange={(e) => updateCart(index, 'quantity', e.target.value)}
                                                             className="text-center"
                                                         />
-                                                        <Button variant="outline" size="sm" onClick={() => updateCart(index, 'quantity', item.quantity + 1)}>
-                                                            <Plus className="h-3 w-3" />
+                                                        <Button variant="outline" size="sm" onClick={() => updateCart(index, 'quantity', item.quantity + 1)} disabled={item.quantity >= item.max}>
+                                                            <Plus className="h-3 w-2" />
                                                         </Button>
                                                     </div>
                                                 </div>
                                                 
-                                                <div className="text-right">
-                                                    <p className="font-bold">Php {item.totalprice.toFixed(2)}</p>
-                                                </div>
+                                            </div>
+
+                                            <div className="text-right pt-2">
+                                                <p className="font-bold">Subtotal: Php {item.totalprice.toFixed(2)}</p>
                                             </div>
                                         </div>
                                     ))}

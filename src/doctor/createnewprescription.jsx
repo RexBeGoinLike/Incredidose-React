@@ -67,7 +67,7 @@ export function CreateNewPrescription(){
                     body: JSON.stringify(prescriptionitems)
                 })
             })
-            navigate(`/doctor/prescriptionlist/${user.id}/${patientid}`)
+            navigate(`/doctor/prescriptionlist/${patientid}`)
         });
     }
 

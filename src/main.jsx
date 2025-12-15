@@ -38,7 +38,7 @@ function App() {
       
         <Route path="/doctor/dashboard/" element={<ProtectedRoute><DoctorDashboard /></ProtectedRoute>} />
         <Route path="/doctor/createnewprescription/:patientid" element={<ProtectedRoute><CreateNewPrescription /></ProtectedRoute>} />
-        <Route path="/doctor/prescriptionlist/:doctorid/:patientid" element={<ProtectedRoute><ViewPrescriptions /></ProtectedRoute>} />
+        <Route path="/doctor/prescriptionlist/:patientid" element={<ProtectedRoute><ViewPrescriptions /></ProtectedRoute>} />
 
         <Route path="/pharmacist/dashboard" element={<ProtectedRoute><PharmacistDashboard /></ProtectedRoute>} />
         <Route path="/pharmacist/viewprescriptions/:patientid" element={<ProtectedRoute><PharmacistViewPrescriptions /></ProtectedRoute>} />

@@ -16,10 +16,9 @@ export function PurchaseInfo(){
         fetch(`/server/includes/purchase_manager.php?action=getPurchasesByPrescription&prescriptionid=${prescriptionid}`)
         .then(res => res.json())
         .then(data => {
-            console.log(data)
             setOriginalRowData(data);
-            setRowData(data)
-            setPinnedBottomRowData([{name: "Total", price: [data].reduce((sum, item) => sum + item.price, 0)}])
+            setRowData(data);
+            setPinnedBottomRowData([{name: "Total", totalprice: data.reduce((sum, item) => sum + item.totalprice, 0)}])
         });
     }, [])
 
@@ -27,9 +26,10 @@ export function PurchaseInfo(){
         [
             { headerName: "Name", field: "name", flex: 2.5, filter: true },
             { headerName: "Brand", field: "brand", flex: 2.5, filter: true  },
-            { headerName: "Quantity", field: "quantity", flex: 1, filter: true },
             { headerName: "Dosage", field: "dosage", flex: 1, filter: true  },
-            { headerName: "Unit Price (Php)", field: "unitprice", flex: 1, filter: true  }
+            { headerName: "Quantity", field: "quantity", flex: 1, filter: true },
+            { headerName: "Unit Price", field: "unitprice", flex: 1, filter: true  },
+            { headerName: "Total Price (Quantity * Unit Price)", field: "totalprice", flex: 1, filter: true  }
         ]
     );
     
@@ -44,7 +44,6 @@ export function PurchaseInfo(){
         <>
             <Header />
             <DataTable rowData={rowData} colDefs={colDefs} pinnedBottomRowData={pinnedBottomRowData} searchFunction={searchFunction} searchPlaceholder={"Enter brand or medicine name..."}>
-                <Button onClick={() => navigate(`/common/payments/${purchaseid}`)}><Receipt /> View Payments</Button>
             </DataTable>
         </>
     );

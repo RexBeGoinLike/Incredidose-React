@@ -16,7 +16,7 @@ export function PharmacistViewPrescriptions(){
     const[rowData, setRowData] = useState();
 
     useEffect(() => {
-        fetch(`/server/includes/prescription_manager.php?action=getPrescriptionsPharmacist&patientid=${patientid}`)
+        fetch(`/server/includes/prescription_manager.php?action=getPrescriptions&patientid=${patientid}`)
         .then(res => res.json())
         .then(data => {
             setOriginalRowData(data);
@@ -29,6 +29,11 @@ export function PharmacistViewPrescriptions(){
 
     const[colDefs, setColDefs] = useState([
         { headerName: "Issuing Date", field: "dateprescribed", flex: 1.5, filter: true },
+        { headerName: "Issued By", flex: 1.5, filter: true,
+            cellRenderer: props => {
+                return (<div>Dr. {props.data.firstname + " " + props.data.lastname}</div>)
+            }
+        },
         { headerName: "Action", flex: 0.25,
             cellRenderer: props =>  {
                 return(
