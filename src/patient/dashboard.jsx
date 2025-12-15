@@ -1,5 +1,5 @@
 import { Header } from "@/common/header";
-import { Eye, Plus } from "lucide-react";
+import { Eye, Clipboard } from "lucide-react";
 import { useEffect, useState } from "react";
 import { DataTable } from "@/components/ui/datatable";
 import { Button } from "@/components/ui/button";
@@ -19,7 +19,7 @@ export function PatientDashboard(){
         });
     }, []);
 
-
+    
     const navigate = useNavigate();
 
     const[colDefs, setColDefs] = useState([
@@ -40,11 +40,12 @@ export function PatientDashboard(){
         }
     ]);
 
-
     return(
         <>
             <Header />
-            <DataTable rowData={rowData} colDefs={colDefs} />
+            <DataTable rowData={rowData} colDefs={colDefs}>
+                <Button onClick={() => window.open(`/server/includes/reportgenerator.php?patientid`, '_blank')}><Clipboard /> Generate Report</Button>
+            </DataTable>
         </>
     );
 }
