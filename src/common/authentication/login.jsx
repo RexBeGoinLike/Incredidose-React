@@ -71,7 +71,7 @@ export function Login() {
                     <div className="mb-8">
                         <h2 className="text-3xl font-semibold text-gray-800">Log In</h2>
                         <p className="text-sm text-gray-500 mt-1">
-                            Use your credentials to access the Doctor Portal.
+                            Use your credentials to access the Portal.
                         </p>
                     </div>
                     

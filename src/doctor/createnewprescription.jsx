@@ -39,7 +39,7 @@ export function CreateNewPrescription(){
             cellRenderer: props => {return(
                 <div className="flex flex-row gap-4 items-center ">
                     <EditPrescriptionDialog props={props} onSave={(data) => editData(data)}/>
-                    <Button variant="ghost" onClick={(e) => deleteData(props.id, e)}><TrashIcon /></Button>
+                    <Button variant="ghost" onClick={(e) => deleteData(props.data.id, e)}><TrashIcon /></Button>
                 </div>
             )}
         }
