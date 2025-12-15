@@ -31,8 +31,10 @@ export function Login() {
                             navigate('/pharmacist/dashboard');
                         } else if (data.role === 'doctor') {
                             navigate(`/doctor/dashboard`);
-                        } else {
+                        } else if (data.role === 'ptnt') {
                             navigate(`/patient/dashboard`);
+                        } else if (data.role === 'admn') {
+                            navigate(`/admin/dashboard`);
                         }
                     }
                 }

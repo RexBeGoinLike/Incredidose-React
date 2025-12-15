@@ -1,7 +1,7 @@
 import { Header } from "@/common/header";
 import { FileText, ArrowLeft } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DataTable } from "@/components/ui/datatable";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -13,54 +13,8 @@ import { ViewLogs } from "./viewlogs";
 
 export function AdminDashboard() {
     const navigate = useNavigate();
-    const [originalRowData, setOriginalRowData] = useState([
-        {
-            userid: 1,
-            firstname: "Marianne",
-            lastname: "Dela Cruz",
-            contactnum: "09172345890",
-            email: "marianne.delacruz@example.com",
-            password: "password123",
-            birthdate: "1998-04-12",
-            createdat: "2025-01-03 10:30:00",
-            role: "patient",
-            gender: "Female",
-            specialization: "",
-            licenseNumber: "",
-            affiliation: ""
-        },
-        {
-            userid: 2,
-            firstname: "Jerome",
-            lastname: "Bautista",
-            contactnum: "09981234567",
-            email: "jerome.bautista@example.com",
-            password: "mypassword456",
-            birthdate: "1995-09-28",
-            createdat: "2025-01-05 14:12:00",
-            role: "patient",
-            gender: "Male",
-            specialization: "",
-            licenseNumber: "",
-            affiliation: ""
-        },
-        {
-            userid: 3,
-            firstname: "Dr. Maria",
-            lastname: "Santos",
-            contactnum: "09178887777",
-            email: "maria.santos@example.com",
-            password: "doctorpass789",
-            birthdate: "1985-03-15",
-            createdat: "2025-01-10 09:45:00",
-            role: "doctor",
-            gender: "Female",
-            specialization: "Cardiology",
-            licenseNumber: "PRC-987654",
-            affiliation: "St. Luke's Medical Center"
-        }
-    ]);
-
+    const [originalRowData, setOriginalRowData] = useState([])
+     
     const [rowData, setRowData] = useState(originalRowData);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -71,6 +25,19 @@ export function AdminDashboard() {
            
         setIsDialogOpen(false);
     };
+
+    useEffect(() => {
+        fetch(`/node/admin/doctors`,{
+             method: 'GET',
+            credentials: 'include'  
+        })
+        .then(res => res.json())
+        .then(data=> {
+            console.log(data.doctors)
+            setRowData(data.doctors);
+            setOriginalRowData(data.doctors);
+        });
+    }, []);
 
     const handleEditUser = (updatedUser) => {
         setRowData(prev => prev.map(user => 
@@ -91,7 +58,7 @@ export function AdminDashboard() {
             },
             { headerName: "Contact Info", field: "contactnum", flex: 1, filter: true  },
             { headerName: "Email", field: "email", flex: 1, filter: true },
-            { headerName: "User Role", field: "role", flex: 1, filter: true},
+            { headerName: "Specialization", field: "specialization", flex: 1, filter: true},
             { 
                 headerName: "Action", 
                 flex: 0.5,
@@ -119,20 +86,6 @@ export function AdminDashboard() {
             },
             { headerName: "Contact Info", field: "contactnum", flex: 1, filter: true  },
             { headerName: "Email", field: "email", flex: 1, filter: true },
-            { 
-                headerName: "Action", 
-                flex: 0.5,
-                cellRenderer: props => {
-                    return (
-                        <div className="flex gap-2">
-                            <EditUserDialog
-                                onSave={handleEditUser}
-                                userData={props.data}
-                            />
-                        </div>
-                    );
-                }
-            }
         ]
     );
 
@@ -165,13 +118,13 @@ export function AdminDashboard() {
                 </div>
                 
                 <TabsContent value="doctor">
-                    <DataTable rowData={rowData.filter(user => user.role === "doctor")} colDefs={doctorColDefs} />
+                    <DataTable rowData={rowData} colDefs={doctorColDefs} />
                 </TabsContent>
                 <TabsContent value="pharmacist">
-                    <DataTable rowData={rowData.filter(user => user.role === "pharmacist")} colDefs={doctorColDefs} />
+                    <DataTable rowData={rowData} colDefs={doctorColDefs} />
                 </TabsContent>
                 <TabsContent value="patient">
-                    <DataTable rowData={rowData.filter(user => user.role === "ptnt")} colDefs={doctorColDefs} />
+                    <DataTable rowData={rowData} colDefs={doctorColDefs} />
                 </TabsContent>
             </Tabs>
         </>

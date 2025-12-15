@@ -43,6 +43,14 @@ export function useAuth() {
         .then(data => {
             setUser(data);
             localStorage.setItem('user', JSON.stringify(data));
+            if(data.role == 'admn'){
+                fetch(`node/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({email, password}),
+                    credentials: 'include'
+                })
+            }
             return data;
         })
     };

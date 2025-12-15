@@ -24,7 +24,7 @@ export function EditUserDialog({onSave, userData}) {
         password,
         contactnum,
         specialization,
-        licenseNumber,
+        licensenum,
         affiliation,
         role
     } = userData;
@@ -37,7 +37,7 @@ export function EditUserDialog({onSave, userData}) {
     const [itemPassword, setItemPassword] = useState(password);
     const [itemPhone, setItemPhone] = useState(contactnum);
     const [itemSpecialization, setItemSpecialization] = useState(specialization);
-    const [itemLicenseNumber, setItemLicenseNumber] = useState(licenseNumber);
+    const [itemLicenseNumber, setItemLicenseNumber] = useState(licensenum);
     const [itemAffiliation, setItemAffiliation] = useState(affiliation);
     const [itemRole, setItemRole] = useState(role);
 
@@ -53,7 +53,7 @@ export function EditUserDialog({onSave, userData}) {
             itemPassword !== password ||
             itemPhone.trim() !== contactnum ||
             itemSpecialization.trim() !== specialization ||
-            itemLicenseNumber.trim() !== licenseNumber ||
+            itemLicenseNumber.trim() !== licensenum ||
             itemAffiliation.trim() !== affiliation ||
             itemRole !== role
         );
@@ -72,7 +72,7 @@ export function EditUserDialog({onSave, userData}) {
             birthdate: itemBirthdate,
             gender: itemGender,
             specialization: itemSpecialization,
-            licenseNumber: itemLicenseNumber,
+            licensenum: itemLicenseNumber,
             affiliation: itemAffiliation,
             role: itemRole
         }
@@ -174,23 +174,6 @@ export function EditUserDialog({onSave, userData}) {
                                     placeholder="e.g., Male, Female, Other"
                                     required
                                 />
-                            </Field>
-
-                            <Field>
-                                <FieldLabel className="text-sm font-medium">Role*</FieldLabel>
-                                <Select
-                                    value={itemRole}
-                                    onValueChange={(value) => setItemRole(value)}
-                                >
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Select a role" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="patient">Patient</SelectItem>
-                                        <SelectItem value="doctor">Doctor</SelectItem>
-                                        <SelectItem value="pharmacist">Pharmacist</SelectItem>
-                                    </SelectContent>
-                                </Select>
                             </Field>
                         </FieldSet>
 

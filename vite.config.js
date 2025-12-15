@@ -12,8 +12,13 @@ export default defineConfig(
           target: 'http://localhost/Incredidose',
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/server/, '') // ADD THIS LINE
+        },
+        '/node': {
+          target: 'http://localhost:3001',
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/node/, '') // ADD THIS LINE
         }
-      },
+      }
     },
     content: [
       "./index.html",
