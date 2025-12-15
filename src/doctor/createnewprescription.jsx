@@ -26,7 +26,7 @@ export function CreateNewPrescription(){
 
     const deleteData = (id, e) => {
         setOriginalRowData(prev => prev.filter(item => item.id !== id));
-        setRowData(prev => {console.log(prev); prev.filter(item => item.id !== id)});
+        setRowData(prev => prev.filter(item => item.id !== id));
     }
 
     const [colDefs, setColDefs] = useState([

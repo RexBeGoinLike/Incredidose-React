@@ -1,6 +1,6 @@
 import { Header } from './../common/header'
-import { useNavigate, useParams } from 'react-router-dom';
-import { Plus, Eye } from 'lucide-react'
+import { Form, useNavigate, useParams } from 'react-router-dom';
+import { Plus, Pencil } from 'lucide-react'
 import { useState, useEffect } from 'react';
 import { DataTable } from '@/components/ui/datatable';
 import { Button } from '@/components/ui/button';
@@ -11,7 +11,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs"
-
+import { FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { Label } from '@radix-ui/react-label';
 import { PatientViewRenderer } from './subcomponents/managepatientrenderer';
@@ -20,15 +20,15 @@ import { AddNewPatientDialog } from './subcomponents/addnewpatient';
 
 function AddExistingPatient(){
 
-    const[patientData, setPatientData] = useState();
+    const[patientData, setPatientData] = useState([]);
 
     function emailSearchFunction(value){
         fetch(`/server/includes/patient_manager.php?action=getPatientByEmail&email=${value}`)
         .then(res => res.json())
         .then(data => {setPatientData(data)});
     }
-
-    console.log(patientData);
+    
+    const navigate = useNavigate();
 
     return(
         <>
@@ -39,7 +39,53 @@ function AddExistingPatient(){
                         emailSearchFunction(e.target.value.trim());
                     }
             }}></Input>
-            
+
+            {patientData.map(patient => {
+                return(
+                <div key={patient.userid} className="grid grid-cols-2 gap-6 pt-4">
+                    <div className="flex flex-col gap-4">
+                        <div>
+                            <FieldLabel className="text-sm">First Name</FieldLabel>
+                            <p className="text-xs">{patient.firstname}</p>
+                        </div>
+
+                        <div>
+                            <FieldLabel className="text-sm">Last Name</FieldLabel>
+                            <p className="text-xs">{patient.lastname}</p>
+                        </div>
+
+                        <div>
+                            <FieldLabel className="text-sm">Contact Number</FieldLabel>
+                            <p className="text-xs">{patient.contactnum}</p>
+                        </div>
+                    </div>
+
+                    <div className="flex flex-col gap-4">
+                        <div>
+                            <FieldLabel className="text-sm">Email</FieldLabel>
+                            <p className="text-xs">{patient.email}</p>
+                        </div>
+
+                        <div>
+                            <FieldLabel className="text-sm">Birth Date</FieldLabel>
+                            <p className="text-xs">{patient.birthdate.split(" ")[0]}</p>
+                        </div>
+
+                        
+                        <div>
+                            <FieldLabel className="text-sm">Gender</FieldLabel>
+                            <p className="text-xs">{patient.gender}</p>
+                        </div>
+                    </div>
+
+
+                    <Button className="col-span-2" onClick={() => navigate(`/doctor/prescriptionlist/${patient.userid}`)}>
+                        <Pencil />Save
+                    </Button>
+
+                </div>
+                )
+            })}
         </>
     );
 
