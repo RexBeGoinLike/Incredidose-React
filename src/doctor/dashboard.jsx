@@ -53,7 +53,7 @@ export function DoctorDashboard(){
     const [rowData, setRowData] = useState();
     
     useEffect(() => {
-        fetch(`/server/includes/patient_manager.php?action=getPatients&doctorid=${doctorid}`)
+        fetch(`/server/includes/patient_manager.php?action=getPatients`)
         .then(res => res.json())
         .then(data => 
             {
@@ -89,7 +89,7 @@ export function DoctorDashboard(){
             body: JSON.stringify(data)
         })
         .then(res => res.json())
-        .then(data => navigate(`/doctor/prescriptionlist/${doctorid}/${data.patientid}`));
+        .then(data => navigate(`/doctor/prescriptionlist/${data.patientid}`));
 
     }
 

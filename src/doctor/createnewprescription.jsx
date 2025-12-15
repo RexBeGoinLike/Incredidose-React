@@ -5,17 +5,17 @@ import { DataTable } from '@/components/ui/datatable';
 import { AddPrescriptionDialog } from './subcomponents/addprescriptionitem';
 import { EditPrescriptionDialog } from './subcomponents/editprescriptionitem';
 import { Button } from '@/components/ui/button';
-import { TrashIcon } from 'lucide-react';
+import { Pencil, ShoppingBag, TrashIcon } from 'lucide-react';
+import { useAuth } from '@/common/auth';
 
-export function CreateNewPrescription(props){
+export function CreateNewPrescription(){
 
-    const { prescriptionid } = useParams();
+    const { patientid } = useParams();
+    const { user } = useAuth();
 
     const location = useLocation();
 
     const [originalRowData, setOriginalRowData] = useState([location.state.data]);
-    
-
     const [rowData, setRowData] = useState([location.state.data]);
 
     const editData = (data) => {
@@ -51,7 +51,24 @@ export function CreateNewPrescription(props){
         const newArray = [...originalRowData, data];
         setOriginalRowData(newArray);
         setRowData(newArray);
+    }
 
+    const handleSubmit = () => {
+        fetch(`/server/includes/prescription_manager.php?action=addPrescription&patientid=${patientid}&doctorid=${user.userid}`)
+        .then(res => res.json())
+        .then(data => {
+            originalRowData.map(prescriptionitems => {
+                prescriptionitems['prescriptionid'] = data.id;
+                  fetch(`/server/includes/prescriptionitem_manager?action=addPrescriptionItem`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(prescriptionitems)
+                })
+            })
+            navigate(`/doctor/prescriptionlist/${user.id}/${patientid}`)
+        });
     }
 
     const searchFunction = (value) => {
@@ -63,6 +80,7 @@ export function CreateNewPrescription(props){
             <Header />
             <DataTable rowData={rowData} colDefs={colDefs} searchFunction={searchFunction} searchPlaceholder={"Enter brand or medicine name..."}>
                 <AddPrescriptionDialog onSave={(data) => handleSave(data)}/>
+                <Button onClick={() => handleSubmit()}><Pencil />Save</Button>
             </DataTable>
         </>
     );

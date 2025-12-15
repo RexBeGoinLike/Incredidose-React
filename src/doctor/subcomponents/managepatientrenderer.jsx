@@ -14,10 +14,7 @@ export function PatientViewRenderer({ data }) {
         lastname,
         contactnum,
         email,
-        password,
         birthdate,
-        createdat,
-        role,
         gender
     } = data;
 
@@ -25,7 +22,7 @@ export function PatientViewRenderer({ data }) {
     const [lastName, setLName] = useState(lastname);
     const [contactNum, setCNum] = useState(contactnum);
     const [emailAddress, setEmailAddress] = useState(email);
-    const [birthDate, setBirthdate] = useState(birthdate);
+    const [birthDate, setBirthdate] = useState(birthdate.split(" ")[0]);
     const [gndr, setGender] = useState(gender);
 
     const { user } = useAuth();
@@ -34,13 +31,31 @@ export function PatientViewRenderer({ data }) {
             firstName.trim() != firstname ||
             lastName.trim() != lastname ||
             Number(contactNum) != contactnum ||
-            emailAddress.trim() != email ||
-            birthDate != birthdate ||
-            gndr != gender
+            emailAddress.trim() != email
         );
     };
 
     const navigate = useNavigate();
+
+    function handleSubmit(e){
+ 
+        const data = {
+            patientid: userid,
+            firstname: firstName,
+            lastname: lastName,
+            contactnum: contactNum,
+            email: emailAddress,
+            birthdate: birthDate
+        }
+        
+        fetch(`/server/includes/patient_manager.php?action=editPatient`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })  
+    }
 
     return (
         <Dialog>
@@ -56,7 +71,7 @@ export function PatientViewRenderer({ data }) {
             </DialogDescription>
             </DialogHeader>
 
-            <Button onClick={() => {navigate(`/doctor/prescriptionlist/${user.userid}/${userid}`)}} className="mb-4">Manage Prescriptions</Button>
+            <Button onClick={() => {navigate(`/doctor/prescriptionlist/${userid}`)}} className="mb-4">Manage Prescriptions</Button>
 
             <form>
                 <FieldGroup className="grid grid-cols-2 gap-6">
@@ -76,6 +91,7 @@ export function PatientViewRenderer({ data }) {
                             type="date"
                             value={birthDate}
                             onChange={(e) => setBirthdate(e.target.value)}
+                            disabled={true}
                         />
                     </Field>
 
@@ -104,6 +120,7 @@ export function PatientViewRenderer({ data }) {
                             type="text"
                             value={gndr}
                             onChange={(e) => setGender(e.target.value)}
+                            disabled={true}
                         />
                     </Field>
 
@@ -117,7 +134,7 @@ export function PatientViewRenderer({ data }) {
                     </Field>
                 </FieldSet>
 
-                <Button className="col-span-2" type="submit" disabled={!isChanged()}>Edit</Button>
+                <Button className="col-span-2" type="submit" disabled={!isChanged()} onClick={(e) => handleSubmit(e)}>Edit</Button>
                 </FieldGroup>
             </form>
 

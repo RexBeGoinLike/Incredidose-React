@@ -1,6 +1,6 @@
 import { Header } from "@/common/header";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { DataTable } from "@/components/ui/datatable";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -36,10 +36,19 @@ export function PharmacistDashboard(){
     ]);
     
     const searchFunction = (value) => {
-        setRowData(prev => prev.filter(user => user.firstname.includes(value.trim()) || user.lastname.includes(value.trim())));
+        setOriginalRowData(prev => prev.filter(user => user.firstname.includes(value.trim()) || user.lastname.includes(value.trim())));
     };
 
-    const [rowData, setRowData] = useState(originalRowData);
+    const [patientData, setPatientData] = useState();
+
+    useEffect(() => {
+        fetch('/server/includes/patient_manager.php?action=getAllPatients')
+        .then(res => res.json())
+        .then(data => {
+            setPatientData(data);
+            setOriginalRowData(data);
+        });
+    }, []);
 
     const [doctorColDefs, setDoctorColDefs] = useState(
         [
@@ -60,7 +69,7 @@ export function PharmacistDashboard(){
             { headerName: "Email", field: "email", flex: 1, filter: true },
             { headerName: "Action", flex: 0.25,
                 cellRenderer: props => {return(
-                    <Button variant="ghost" onClick={() => navigate('/pharmacist/viewprescriptions')} ><Eye /></Button>
+                    <Button variant="ghost" onClick={() => navigate(`/pharmacist/viewprescriptions/${props.data.userid}`)} ><Eye /></Button>
                 )}
             }
         ]
@@ -77,10 +86,10 @@ export function PharmacistDashboard(){
                     </TabsList>
                 </div>
                 <TabsContent value="patient">
-                    <DataTable rowData={rowData} colDefs={patientColDefs} searchFunction={searchFunction} searchPlaceholder={"Enter a patient's name..."} />
+                    <DataTable rowData={patientData} colDefs={patientColDefs} searchFunction={searchFunction} searchPlaceholder={"Enter a patient's name..."} />
                 </TabsContent>
                 <TabsContent value="doctor">
-                    <DataTable rowData={rowData} colDefs={doctorColDefs} searchFunction={searchFunction} searchPlaceholder={"Enter a doctor's name..."}/>
+                    <DataTable rowData={patientData} colDefs={doctorColDefs} searchFunction={searchFunction} searchPlaceholder={"Enter a doctor's name..."}/>
                 </TabsContent>
             </Tabs>
         </>

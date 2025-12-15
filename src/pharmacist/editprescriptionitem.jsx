@@ -1,133 +1,83 @@
 import { Header } from '../common/header'
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { ShoppingBag, Eye, ShoppingCart, Trash2, Plus, Minus } from 'lucide-react'
 import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger, DialogHeader, DialogFooter } from '@/components/ui/dialog';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Separator } from '@/components/ui/separator';
 import { DataTable } from '@/components/ui/datatable';
 import { Button } from '@/components/ui/button';
-import { EditPurchaseItemDialog } from './subcomponents/purchaseitem';
 import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
 
-export function EditPrescriptionItems(){
-    const { prescriptionid } = useParams();
-    const [originalRowData, setOriginalRowData] = useState(
-        [
-            {
-                prescriptionitemid: "1",
-                name: "Ibuprofen", 
-                brand: "Alaxan", 
-                available: 10, 
-                quantity: 20, 
-                dosage: 20, 
-                substitutions: true, 
-                frequency: 1, 
-                description: ""
-            },
-            {
-                prescriptionitemid: "2",
-                name: "Paracetamol", 
-                brand: "Generic", 
-                available: 10, 
-                quantity: 20, 
-                dosage: 20, 
-                substitutions: true, 
-                frequency: 1, 
-                description: "No king"
-            }
-        ]
-    )
-
+export function EditPrescriptionItems() {
+    const { prescriptionid, patientid } = useParams();
+    const [items, setItems] = useState([]);
     const [cart, setCart] = useState([]);
-    const [isCartOpen, setIsCartOpen] = useState(false);
+    const [cartOpen, setCartOpen] = useState(false);
 
-    const handleSave = (data) => {
-        const originalItem = originalRowData.find(item => 
-            item.prescriptionitemid === data.precriptionitemid
-        );
-        
+    useEffect(() => {
+        fetch(`/server/includes/prescriptionitem_manager.php?action=getPrescriptionItems&prescriptionid=${prescriptionid}`)
+            .then(res => res.json())
+            .then(data => setItems(data));
+    }, []);
+
+    const addToCart = (data) => {
+        const originalItem = items.find(item => item.prescriptionitemid === data.prescriptionitemid);
         if (!originalItem) return;
-        
-        const existingIndex = cart.findIndex(item => 
-            item.precriptionitemid === data.precriptionitemid
-        );
         
         const cartItem = {
             ...data,
             name: originalItem.name,
             brand: originalItem.brand,
-            totalprice: data.unitprice * data.quantity
+            quantity: originalItem.available,
+            totalprice: (data.unitprice || 0) * (data.quantity || 1)
         };
         
-        if (existingIndex >= 0) {
-            setCart(prev => {
-                const updatedCart = [...prev];
-                updatedCart[existingIndex] = cartItem;
-                return updatedCart;
-            });
-        } else {
-            setCart(prev => [...prev, cartItem]);
-        }
+        setCart(prev => {
+            const existing = prev.findIndex(item => item.prescriptionitemid === data.prescriptionitemid);
+            if (existing >= 0) {
+                const newCart = [...prev];
+                newCart[existing] = cartItem;
+                return newCart;
+            }
+            return [...prev, cartItem];
+        });
     };
 
-    const handleDeleteItem = (index) => {
+    const updateCart = (index, field, value) => {
+        setCart(prev => {
+            const newCart = [...prev];
+            const item = newCart[index];
+            
+            if (field === 'quantity') {
+                const qty = parseInt(value);
+                if (qty < 1) {
+                    return prev.filter((_, i) => i !== index);
+                }
+                item.quantity = qty;
+            } else if (field === 'unitprice') {
+                item.unitprice = parseFloat(value) || 0;
+            }
+            
+            item.totalprice = item.unitprice * item.quantity;
+            return newCart;
+        });
+    };
+
+    const removeFromCart = (index) => {
         setCart(prev => prev.filter((_, i) => i !== index));
     };
 
-    const handleQuantityChange = (index, newQuantity) => {
-        if (newQuantity < 1) {
-            handleDeleteItem(index);
-            return;
-        }
-
-        setCart(prev => {
-            const updatedCart = [...prev];
-            const item = updatedCart[index];
-            updatedCart[index] = {
-                ...item,
-                quantity: newQuantity,
-                totalprice: item.unitprice * newQuantity
-            };
-            return updatedCart;
-        });
-    };
-
-    const handleUnitPriceChange = (index, newUnitPrice) => {
-        setCart(prev => {
-            const updatedCart = [...prev];
-            const item = updatedCart[index];
-            const unitPrice = parseFloat(newUnitPrice) || 0;
-            updatedCart[index] = {
-                ...item,
-                unitprice: unitPrice,
-                totalprice: unitPrice * item.quantity
-            };
-            return updatedCart;
-        });
-    };
-
-    const calculateTotal = () => {
-        return cart.reduce((sum, item) => sum + (item.totalprice || 0), 0);
-    };
-
-    const clearCart = () => {
-        setCart([]);
-        setIsCartOpen(false);
-    };
-
-    const [rowData, setRowData] = useState(originalRowData);
-
-    const [colDefs, setColDefs] = useState([
-        { headerName: "Name", field: "name", flex: 2.5, filter: true },
-        { headerName: "Brand", field: "brand", flex: 2.5, filter: true  },
-        { headerName: "Available", field: "available", flex: 1, filter: true},
-        { headerName: "Quantity", field: "quantity", flex: 1, filter: true },
-        { headerName: "Dosage", field: "dosage", flex: 1, filter: true  },
-        { flex: 0.5,
+    const columns = [
+        { headerName: "Name", field: "name", flex: 1.5 },
+        { headerName: "Brand", field: "brand", flex: 1.5 },
+        { headerName: "Available", field: "available", flex: 0.5 },
+        { headerName: "Quantity", field: "quantity", flex: 0.5 },
+        { headerName: "Dosage", field: "dosage", flex: 0.5 },
+        {
+            flex: 0.3,
             cellRenderer: props => {
                 const { name, brand, available, quantity, dosage, frequency, substitutions, description } = props.data;
-                return(<div className="flex items-center h-1/1 w-1/1">
+                return (
                     <Dialog>
                         <DialogTrigger asChild>
                             <Button variant="ghost"><Eye /> </Button>
@@ -156,7 +106,7 @@ export function EditPrescriptionItems(){
                                 <div className="flex flex-col gap-6">
                                     <div>
                                         <h3 className="text-sm">Quantity</h3>
-                                        <p className="text-xs">{available} ({quantity}))</p>
+                                        <p className="text-xs">{available} ({quantity})</p>
                                     </div>
                                     <div>
                                         <h3 className="text-sm">Dosage</h3>
@@ -178,201 +128,160 @@ export function EditPrescriptionItems(){
                             </div>
                         </DialogContent>
                     </Dialog>
-                </div>);
+                );
             }
         },
         {
-          flex: 0.5,
-          cellRenderer: props => {
-                const { prescriptionitemid, name, brand, available, quantity } = props.data;
-
-                const params = {
-                    availableAmt: available,
-                    quantity: quantity,
-                    prescriptionitemid: prescriptionitemid
-                };
-
+            flex: 0.3,
+            cellRenderer: props => {
                 return (
-                    <EditPurchaseItemDialog 
-                        props={params} 
-                        onSave={(data) => handleSave(data)}
-                    />
-                )
-          }
+                    <Button variant="ghost"onClick={() => addToCart({
+                        prescriptionitemid: props.data.prescriptionitemid,
+                        quantity: 1,
+                        unitprice: 0
+                    })} disabled={props.data.available == 0}>
+                        <ShoppingCart />
+                    </Button>
+                );
+            }
         }
-    ]);
-
-    const navigate = useNavigate();
+    ];
 
     const searchFunction = (value) => {
-        setRowData(originalRowData.filter(item => 
-            item.name.toLowerCase().includes(value.toLowerCase().trim()) || 
-            item.brand.toLowerCase().includes(value.toLowerCase().trim())
-        ));
+        setItems(prev => {
+            const original = JSON.parse(localStorage.getItem('originalItems') || '[]');
+            if (!value.trim()) return original;
+            return original.filter(item => 
+                item.name.toLowerCase().includes(value.toLowerCase()) || 
+                item.brand.toLowerCase().includes(value.toLowerCase())
+            );
+        });
     };
 
-    return(
+    useEffect(() => {
+        if (items.length > 0) {
+            localStorage.setItem('originalItems', JSON.stringify(items));
+        }
+    }, [items]);
+
+    const total = cart.reduce((sum, item) => sum + (item.totalprice || 0), 0);
+
+    function purchaseItems(){
+        fetch('/server/includes/purchase_manager.php?action=createPurchase', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({prescriptionid: prescriptionid, patientid: patientid})
+        })
+        .then(res => res.json())
+        .then(data => {
+            cart.map(purchaseItems => {
+                purchaseItems['purchaseid'] = data.purchaseid;
+                fetch(`/server/includes/purchaseitem_manager.php?action=addPurchaseItem`, {            
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(purchaseItems)
+                });
+            })
+        })
+    }   
+
+    return (
         <>
             <Header />
-            <DataTable rowData={rowData} colDefs={colDefs} searchFunction={searchFunction} searchPlaceholder={"Enter brand or medicine name..."}>
-                <Dialog open={isCartOpen} onOpenChange={setIsCartOpen}>
+            <DataTable rowData={items} colDefs={columns} searchFunction={searchFunction} searchPlaceholder="Enter brand or medicine name...">
+                <Dialog open={cartOpen} onOpenChange={setCartOpen}>
                     <DialogTrigger asChild>
-                        <Button className="relative">
+                        <Button>
                             <ShoppingCart className="mr-2 h-4 w-4" /> 
-                            View Cart
-                            {cart.length > 0 && (
-                                <Badge 
-                                    variant="secondary" 
-                                    className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs"
-                                >
-                                    {cart.length}
-                                </Badge>
-                            )}
+                            View Cart ({cart.length})
                         </Button>
                     </DialogTrigger>
-                    <DialogContent className="max-w-4xl max-h-[80vh] overflow-hidden flex flex-col">
+                    <DialogContent className="max-w-4xl">
                         <DialogHeader>
                             <DialogTitle>Shopping Cart</DialogTitle>
-                            <DialogDescription>
-                                Review and manage your purchase items
-                            </DialogDescription>
+                            <DialogDescription>Review your items</DialogDescription>
                         </DialogHeader>
                         
-                        <Separator />
-                        
                         {cart.length === 0 ? (
-                            <div className="flex flex-col items-center justify-center py-12">
-                                <ShoppingBag className="h-16 w-16 text-muted-foreground mb-4" />
-                                <h3 className="text-lg font-medium mb-2">Your cart is empty</h3>
-                                <p className="text-sm text-muted-foreground">Add items from the prescription list</p>
+                            <div className="py-12 text-center">
+                                <ShoppingBag className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
+                                <h3 className="text-lg font-medium">Your cart is empty</h3>
                             </div>
                         ) : (
                             <>
-                                <div className="flex-1 overflow-y-auto pr-2">
-                                    <div className="space-y-4">
-                                        {cart.map((item, index) => (
-                                            <div 
-                                                key={item.purchaseitemid}
-                                                className="border rounded-lg p-4"
-                                            >
-                                                <div className="flex justify-between items-start mb-3">
-                                                    <div>
-                                                        <h4 className="font-medium">{item.name}</h4>
-                                                        <p className="text-sm text-muted-foreground">{item.brand}</p>
-                                                    </div>
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="sm"
-                                                        onClick={() => handleDeleteItem(index)}
-                                                        className="h-8 w-8 p-0"
-                                                    >
-                                                        <Trash2 className="h-4 w-4" />
-                                                    </Button>
+                                <div className="space-y-4 max-h-96 overflow-y-auto">
+                                    {cart.map((item, index) => (
+                                        <div key={index} className="border p-4 rounded">
+                                            <div className="flex justify-between mb-3">
+                                                <div>
+                                                    <h4 className="font-medium">{item.name}</h4>
+                                                    <p className="text-sm text-muted-foreground">{item.brand}</p>
+                                                </div>
+                                                <Button variant="ghost" size="sm" onClick={() => removeFromCart(index)}>
+                                                    <Trash2 className="h-4 w-4" />
+                                                </Button>
+                                            </div>
+                                            
+                                            <div className="grid grid-cols-3 gap-4">
+                                                <div>
+                                                    <label className="text-xs">Unit Price</label>
+                                                    <Input
+                                                        type="number"
+                                                        value={item.unitprice}
+                                                        onChange={(e) => updateCart(index, 'unitprice', e.target.value)}
+                                                    />
                                                 </div>
                                                 
-                                                <div className="grid grid-cols-3 gap-4">
-                                                    <div>
-                                                        <label className="text-xs text-muted-foreground mb-1 block">
-                                                            Unit Price
-                                                        </label>
+                                                <div>
+                                                    <label className="text-xs">Quantity</label>
+                                                    <div className="flex gap-1">
+                                                        <Button variant="outline" size="sm" onClick={() => updateCart(index, 'quantity', item.quantity - 1)}>
+                                                            <Minus className="h-3 w-3" />
+                                                        </Button>
                                                         <Input
-                                                            type="number"
-                                                            min="0"
-                                                            step="0.01"
-                                                            value={item.unitprice}
-                                                            onChange={(e) => handleUnitPriceChange(index, e.target.value)}
-                                                            className="h-8"
+                                                            value={item.quantity}
+                                                            min={1}
+                                                            max={item.quantity}
+                                                            onChange={(e) => updateCart(index, 'quantity', e.target.value)}
+                                                            className="text-center"
                                                         />
-                                                    </div>
-                                                    
-                                                    <div>
-                                                        <label className="text-xs text-muted-foreground mb-1 block">
-                                                            Quantity
-                                                        </label>
-                                                        <div className="flex items-center gap-1">
-                                                            <Button
-                                                                variant="outline"
-                                                                size="sm"
-                                                                className="h-8 w-8 p-0"
-                                                                onClick={() => handleQuantityChange(index, item.quantity - 1)}
-                                                            >
-                                                                <Minus className="h-3 w-3" />
-                                                            </Button>
-                                                            <Input
-                                                                type="number"
-                                                                min="1"
-                                                                value={item.quantity}
-                                                                onChange={(e) => handleQuantityChange(index, parseInt(e.target.value) || 1)}
-                                                                className="h-8 text-center"
-                                                            />
-                                                            <Button
-                                                                variant="outline"
-                                                                size="sm"
-                                                                className="h-8 w-8 p-0"
-                                                                onClick={() => handleQuantityChange(index, item.quantity + 1)}
-                                                            >
-                                                                <Plus className="h-3 w-3" />
-                                                            </Button>
-                                                        </div>
-                                                    </div>
-                                                    
-                                                    <div>
-                                                        <label className="text-xs text-muted-foreground mb-1 block">
-                                                            Total Price
-                                                        </label>
-                                                        <div className="h-8 flex items-center justify-end">
-                                                            <span className="font-medium">
-                                                                Php {item.totalprice.toFixed(2)}
-                                                            </span>
-                                                        </div>
+                                                        <Button variant="outline" size="sm" onClick={() => updateCart(index, 'quantity', item.quantity + 1)}>
+                                                            <Plus className="h-3 w-3" />
+                                                        </Button>
                                                     </div>
                                                 </div>
+                                                
+                                                <div className="text-right">
+                                                    <p className="font-bold">Php {item.totalprice.toFixed(2)}</p>
+                                                </div>
                                             </div>
-                                        ))}
-                                    </div>
+                                        </div>
+                                    ))}
                                 </div>
                                 
-                                <div className="pt-4 border-t">
-                                    <div className="flex justify-between items-center mb-4">
+                                <div className="border-t pt-4">
+                                    <div className="flex justify-between items-center">
                                         <div>
-                                            <div className="text-sm text-muted-foreground">
-                                                {cart.length} {cart.length === 1 ? 'item' : 'items'} in cart
-                                            </div>
-                                            <Button
-                                                variant="outline"
-                                                size="sm"
-                                                onClick={clearCart}
-                                                className="mt-1 h-8 gap-1"
-                                            >
-                                                <Trash2 className="h-3 w-3" />
+                                            <p className="text-sm">{cart.length} items</p>
+                                            <Button variant="outline" onClick={() => setCart([])}>
                                                 Clear Cart
                                             </Button>
                                         </div>
                                         <div className="text-right">
-                                            <div className="text-2xl font-bold">
-                                                ${calculateTotal().toFixed(2)}
-                                            </div>
-                                            <p className="text-sm text-muted-foreground">Total Amount</p>
+                                            <p className="text-2xl font-bold">Php {total.toFixed(2)}</p>
+                                            <Button onClick={() => {
+                                                purchaseItems();
+                                                setCart([]);
+                                                setCartOpen(false);
+                                            }}>
+                                                Complete Purchase
+                                            </Button>
                                         </div>
                                     </div>
-                                    
-                                    <DialogFooter className="gap-2">
-                                        <Button
-                                            variant="outline"
-                                            onClick={() => setIsCartOpen(false)}
-                                        >
-                                            Continue Shopping
-                                        </Button>
-                                        <Button 
-                                            onClick={() => {
-                                                // Handle checkout logic
-                                                console.log('Checkout items:', cart);
-                                                setIsCartOpen(false);
-                                            }}
-                                        >
-                                            Complete Purchase
-                                        </Button>
-                                    </DialogFooter>
                                 </div>
                             </>
                         )}

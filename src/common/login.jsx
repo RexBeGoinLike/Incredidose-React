@@ -17,10 +17,7 @@ export function Login() {
 
     const { login } = useAuth();
 
-    function handleSubmit(){
-        login(email, password);
-    }
-
+    //Check if session has not expired
     useEffect(() => {
         const checkSession = async () => {
             try {
@@ -34,9 +31,9 @@ export function Login() {
                         if (data.role === 'pharmacist') {
                             navigate('/pharmacist/dashboard');
                         } else if (data.role === 'doctor') {
-                            navigate(`/doctor/dashboard/${data.userid}`);
+                            navigate(`/doctor/dashboard`);
                         } else {
-                            navigate(`/patient/dashboard/${data.userid}`);
+                            navigate(`/patient/dashboard`);
                         }
                     }
                 }
@@ -79,9 +76,7 @@ export function Login() {
                         </p>
                     </div>
                     
-                    <form onSubmit={(e) => {
-                        e.preventDefault();
-                    }}>
+                    <form>
                         <FieldGroup className="flex flex-col gap-6">
                             <Field>
                                 <Label htmlFor="email">Email</Label>
@@ -108,14 +103,13 @@ export function Login() {
                                 />
                             </Field> 
                             <Field className="pt-2">
-                                <Button type="submit" className="w-full" onClick={handleSubmit} disabled={isLoading}>
+                                <Button type="submit" className="w-full" onClick={() => login(email, password)} disabled={isLoading}>
                                     {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                                     {isLoading ? 'Authenticating...' : 'Sign In'}
                                 </Button>
                             </Field>          
                         </FieldGroup>
                     </form>
-
                 </div>
             </div>
         </div>
