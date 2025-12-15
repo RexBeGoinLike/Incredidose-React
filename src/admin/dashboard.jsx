@@ -4,9 +4,10 @@ import { useState } from "react";
 import { DataTable } from "@/components/ui/datatable";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Eye, Plus } from "lucide-react";
+import { Eye, Plus, Pencil } from "lucide-react";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { AddUserDialog } from "./subcomponents/adduser";
+import { EditUserDialog } from "./subcomponents/edituser";
 
 export function AdminDashboard() {
     const navigate = useNavigate();
@@ -21,7 +22,10 @@ export function AdminDashboard() {
             birthdate: "1998-04-12",
             createdat: "2025-01-03 10:30:00",
             role: "patient",
-            gender: "Female"
+            gender: "Female",
+            specialization: "",
+            licenseNumber: "",
+            affiliation: ""
         },
         {
             userid: 2,
@@ -33,7 +37,25 @@ export function AdminDashboard() {
             birthdate: "1995-09-28",
             createdat: "2025-01-05 14:12:00",
             role: "patient",
-            gender: "Male"
+            gender: "Male",
+            specialization: "",
+            licenseNumber: "",
+            affiliation: ""
+        },
+        {
+            userid: 3,
+            firstname: "Dr. Maria",
+            lastname: "Santos",
+            contactnum: "09178887777",
+            email: "maria.santos@example.com",
+            password: "doctorpass789",
+            birthdate: "1985-03-15",
+            createdat: "2025-01-10 09:45:00",
+            role: "doctor",
+            gender: "Female",
+            specialization: "Cardiology",
+            licenseNumber: "PRC-987654",
+            affiliation: "St. Luke's Medical Center"
         }
     ]);
 
@@ -49,6 +71,16 @@ export function AdminDashboard() {
         setIsDialogOpen(false);
     };
 
+    const handleEditUser = (updatedUser) => {
+        // Update the user in rowData
+        setRowData(prev => prev.map(user => 
+            user.userid === updatedUser.userid ? updatedUser : user
+        ));
+        setOriginalRowData(prev => prev.map(user => 
+            user.userid === updatedUser.userid ? updatedUser : user
+        ));
+    };
+
     const [doctorColDefs, setDoctorColDefs] = useState(
         [
             { 
@@ -59,7 +91,21 @@ export function AdminDashboard() {
             },
             { headerName: "Contact Info", field: "contactnum", flex: 1, filter: true  },
             { headerName: "Email", field: "email", flex: 1, filter: true },
-            { headerName: "User Role", field: "role", flex: 1, filter: true}
+            { headerName: "User Role", field: "role", flex: 1, filter: true},
+            { 
+                headerName: "Action", 
+                flex: 0.5,
+                cellRenderer: props => {
+                    return (
+                        <div className="flex gap-2">
+                            <EditUserDialog
+                                onSave={handleEditUser}
+                                userData={props.data}
+                            />
+                        </div>
+                    );
+                }
+            }
         ]
     );
 
@@ -75,12 +121,15 @@ export function AdminDashboard() {
             { headerName: "Email", field: "email", flex: 1, filter: true },
             { 
                 headerName: "Action", 
-                flex: 0.25,
+                flex: 0.5,
                 cellRenderer: props => {
                     return (
-                        <Button variant="ghost" onClick={() => navigate('/pharmacist/viewprescriptions')}>
-                            <Eye />
-                        </Button>
+                        <div className="flex gap-2">
+                            <EditUserDialog
+                                onSave={handleEditUser}
+                                userData={props.data}
+                            />
+                        </div>
                     );
                 }
             }
@@ -115,10 +164,10 @@ export function AdminDashboard() {
                 </div>
                 
                 <TabsContent value="patient">
-                    <DataTable rowData={rowData} colDefs={patientColDefs} />
+                    <DataTable rowData={rowData.filter(user => user.role === "patient")} colDefs={patientColDefs} />
                 </TabsContent>
                 <TabsContent value="doctor">
-                    <DataTable rowData={rowData} colDefs={doctorColDefs} />
+                    <DataTable rowData={rowData.filter(user => user.role === "doctor")} colDefs={doctorColDefs} />
                 </TabsContent>
             </Tabs>
         </>

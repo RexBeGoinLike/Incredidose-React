@@ -20,6 +20,7 @@ import { CreateNewPrescription } from './doctor/createnewprescription';
 import { PharmacistDashboard } from './pharmacist/dashboard';
 import { PharmacistViewPrescriptions } from './pharmacist/viewprescriptions';
 import { EditPrescriptionItems } from './pharmacist/editprescriptionitem';
+import { AdminDashboard } from './admin/dashboard';
 
 
 
@@ -43,6 +44,8 @@ function App() {
         <Route path="/pharmacist/dashboard" element={<ProtectedRoute><PharmacistDashboard /></ProtectedRoute>} />
         <Route path="/pharmacist/viewprescriptions/:patientid" element={<ProtectedRoute><PharmacistViewPrescriptions /></ProtectedRoute>} />
         <Route path="/pharmacist/prescriptioninfo/:patientid/:prescriptionid" element={<ProtectedRoute><EditPrescriptionItems /></ProtectedRoute>} />
+
+        <Route path="/admin/dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
       </Routes>
     </Router>
   )
