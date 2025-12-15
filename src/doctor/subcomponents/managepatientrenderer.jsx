@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Eye } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { FieldGroup, FieldSet, Field, FieldLabel } from "@/components/ui/field";
-import { useAuth } from "@/common/auth";
+import { useAuth } from "@/common/authentication/auth";
 
 export function PatientViewRenderer({ data }) {
     const {

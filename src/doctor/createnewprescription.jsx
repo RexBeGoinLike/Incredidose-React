@@ -6,7 +6,7 @@ import { AddPrescriptionDialog } from './subcomponents/addprescriptionitem';
 import { EditPrescriptionDialog } from './subcomponents/editprescriptionitem';
 import { Button } from '@/components/ui/button';
 import { Pencil, ShoppingBag, TrashIcon } from 'lucide-react';
-import { useAuth } from '@/common/auth';
+import { useAuth } from '@/common/authentication/auth';
 
 export function CreateNewPrescription(){
 

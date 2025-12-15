@@ -17,7 +17,6 @@ export function Login() {
 
     const { login } = useAuth();
 
-    //Check if session has not expired
     useEffect(() => {
         const checkSession = async () => {
             try {

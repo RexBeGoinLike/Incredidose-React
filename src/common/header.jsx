@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button'
 import logo from './../assets/logo-image.png'
 import text from './../assets/logo-text.png'
-import { useAuth } from './auth'
+import { useAuth } from './authentication/auth'
 
 export function Header(){
 
