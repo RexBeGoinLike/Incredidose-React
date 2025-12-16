@@ -7,6 +7,7 @@ import { Separator } from '@/components/ui/separator';
 import { DataTable } from '@/components/ui/datatable';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import e from 'cors';
 
 export function EditPrescriptionItems() {
     const { prescriptionid, patientid } = useParams();
@@ -61,6 +62,8 @@ export function EditPrescriptionItems() {
                 item.quantity = qty;
             } else if (field === 'unitprice') {
                 item.unitprice = parseFloat(value) || 0;
+            } else if (field === 'brand') {
+                item.brand = value.trim();
             }
             
             item.totalprice = item.unitprice * item.quantity;
@@ -232,10 +235,10 @@ export function EditPrescriptionItems() {
                                                 <div>
                                                     <label className="text-xs">Brand</label>
                                                     <Input
-                                                        type="text"
+                                                        type="text" 
                                                         value={item.brand}
                                                         onChange={(e) => updateCart(index, 'brand', e.target.value)}
-                                                        disabled={item.substitutions}
+                                                        disabled={item.substitutions == false}
                                                         required />
                                                 </div>
 

@@ -8,34 +8,35 @@ import { Eye } from "lucide-react";
 
 export function PharmacistDashboard(){
     const navigate = useNavigate();
-    const [originalPatientData, setOriginalPatientData] = useState([
+    const [value, setValue] = useState("patient");
+    const [originalRowData, setOriginalRowData] = useState([
     ]);
-    
+    const [rowData, setRowData] = useState();
+
     const searchFunction = (value) => {
-        setOriginalRowData(prev => prev.filter(user => user.firstname.includes(value.trim()) || user.lastname.includes(value.trim())));
+        setRowData( originalRowData.filter(user => user.firstname.includes(value.trim()) || user.lastname.includes(value.trim())));
     };
 
-    const [patientData, setPatientData] = useState();
+
 
     useEffect(() => {
-        fetch('/server/includes/patient_manager.php?action=getAllPatients')
-        .then(res => res.json())
-        .then(data => {
-            setPatientData(data);
-            setOriginalRowData(data);
-        });
-    }, []);
+        if(value == "patient"){
+            fetch('/server/includes/patient_manager.php?action=getAllPatients')
+                .then(res => res.json())
+                .then(data => {
+                    setRowData(data);
+                    setOriginalRowData(data);
+            });
+        }else{
+            fetch('/server/includes/doctor_manager.php')
+                .then(res => res.json())
+                .then(data => {
+                    setRowData(data);
+                    setOriginalRowData(data);
+                });
+        }
+    }, [value]);
 
-    const [doctorData, setDoctorData] = useState();
-
-    useEffect(() => {
-        fetch('/server/includes/doctor_manager.php')
-        .then(res => res.json())
-        .then(data => {
-            setDoctorData(data);
-            setOriginalRowData(data);
-        });
-    }, []);
 
     const [doctorColDefs, setDoctorColDefs] = useState(
         [
@@ -66,7 +67,7 @@ export function PharmacistDashboard(){
     return (
         <>
             <Header />
-            <Tabs defaultValue="patient" >
+            <Tabs value={value} onValueChange={setValue} >
                 <div className="pt-3 pl-10 pr-10">
                     <TabsList >
                         <TabsTrigger value="patient">Patient</TabsTrigger>
@@ -74,10 +75,10 @@ export function PharmacistDashboard(){
                     </TabsList>
                 </div>
                 <TabsContent value="patient">
-                    <DataTable rowData={patientData} colDefs={patientColDefs} searchFunction={searchFunction} searchPlaceholder={"Enter a patient's name..."} />
+                    <DataTable rowData={rowData} colDefs={patientColDefs} searchFunction={searchFunction} searchPlaceholder={"Enter a patient's name..."} />
                 </TabsContent>
                 <TabsContent value="doctor">
-                    <DataTable rowData={doctorData} colDefs={doctorColDefs} searchFunction={searchFunction} searchPlaceholder={"Enter a doctor's name..."}/>
+                    <DataTable rowData={rowData} colDefs={doctorColDefs} searchFunction={searchFunction} searchPlaceholder={"Enter a doctor's name..."}/>
                 </TabsContent>
             </Tabs>
         </>

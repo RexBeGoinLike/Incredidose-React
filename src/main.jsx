@@ -1,7 +1,6 @@
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter as Router, Routes, Route, BrowserRouter } from 'react-router-dom';
-import './index.css'
-
+import './index.css';
 import { Login } from './common/authentication/login';
 import { ProtectedRoute } from './common/authentication/protectedroute';
 
