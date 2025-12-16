@@ -52,7 +52,7 @@ export function useAuth() {
                 })
             }
             return data;
-        })
+        }) 
     };
 
     const logout = async () => {
