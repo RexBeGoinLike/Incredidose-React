@@ -31,15 +31,13 @@ export function EditUserDialog({onSave, userData}) {
 
     const [itemFirstname, setItemFirstname] = useState(firstname);
     const [itemLastname, setItemLastname] = useState(lastname);
-    const [itemBirthdate, setItemBirthdate] = useState(birthdate);
     const [itemGender, setItemGender] = useState(gender);
     const [itemEmail, setItemEmail] = useState(email);
     const [itemPassword, setItemPassword] = useState(password);
     const [itemPhone, setItemPhone] = useState(contactnum);
-    const [itemSpecialization, setItemSpecialization] = useState(specialization);
-    const [itemLicenseNumber, setItemLicenseNumber] = useState(licensenum);
-    const [itemAffiliation, setItemAffiliation] = useState(affiliation);
-    const [itemRole, setItemRole] = useState(role);
+    const [itemSpecialization, setItemSpecialization] = useState(specialization ? specialization : "");
+    const [itemLicenseNumber, setItemLicenseNumber] = useState(licensenum ? licensenum : "");
+    const [itemAffiliation, setItemAffiliation] = useState(affiliation ? affiliation : "");
 
     const [open, setOpen] = useState(false);
 
@@ -47,15 +45,13 @@ export function EditUserDialog({onSave, userData}) {
         return (
             itemFirstname.trim() !== firstname ||
             itemLastname.trim() !== lastname ||
-            itemBirthdate !== birthdate ||
             itemGender !== gender ||
             itemEmail.trim() !== email ||
             itemPassword !== password ||
             itemPhone.trim() !== contactnum ||
             itemSpecialization.trim() !== specialization ||
             itemLicenseNumber.trim() !== licensenum ||
-            itemAffiliation.trim() !== affiliation ||
-            itemRole !== role
+            itemAffiliation.trim() !== affiliation 
         );
     };
 
@@ -69,12 +65,12 @@ export function EditUserDialog({onSave, userData}) {
             contactnum: itemPhone,
             email: itemEmail,
             password: itemPassword,
-            birthdate: itemBirthdate,
+            birthdate: birthdate,
             gender: itemGender,
             specialization: itemSpecialization,
             licensenum: itemLicenseNumber,
             affiliation: itemAffiliation,
-            role: itemRole
+            role: role
         }
 
         if (onSave) {
@@ -117,17 +113,6 @@ export function EditUserDialog({onSave, userData}) {
                                     type="text"
                                     value={itemLastname}
                                     onChange={(e) => setItemLastname(e.target.value)}
-                                    required
-                                />
-                            </Field>
-
-                            <Field>
-                                <FieldLabel className="text-sm font-medium">Date of Birth*</FieldLabel>
-                                <Input
-                                    type="date"
-                                    value={itemBirthdate}
-                                    onChange={(e) => setItemBirthdate(e.target.value)}
-                                    max={new Date().toISOString().split('T')[0]}
                                     required
                                 />
                             </Field>

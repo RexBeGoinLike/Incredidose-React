@@ -3,8 +3,7 @@ import {
     Dialog, 
     DialogContent, 
     DialogHeader, 
-    DialogTitle, 
-    DialogDescription,
+    DialogTitle,
     DialogTrigger
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -24,83 +23,109 @@ import {
     SelectValue 
 } from "@/components/ui/select";
 
-export function AddUserDialog({ onSave, existingUsers }) {
+export function AddUserDialog({ onSave }) {
     const [open, setOpen] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     
-    const [firstname, setFirstname] = useState("");
-    const [lastname, setLastname] = useState("");
-    const [birthdate, setBirthdate] = useState("");
-    const [gender, setGender] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [phone, setPhone] = useState("");
-    const [specialization, setSpecialization] = useState("");
-    const [licenseNumber, setLicenseNumber] = useState("");
-    const [affiliation, setAffiliation] = useState("");
-    const [role, setRole] = useState("");
+    const [formData, setFormData] = useState({
+        firstname: "",
+        lastname: "",
+        birthdate: "",
+        gender: "",
+        email: "",
+        password: "",
+        phone: "",
+        specialization: "",
+        licenseNumber: "",
+        affiliation: "",
+        role: ""
+    });
 
-    const isChanged = () => {
+    // Update a specific field
+    const handleChange = (field, value) => {
+        setFormData(prev => ({
+            ...prev,
+            [field]: value
+        }));
+    };
+
+    const isFormValid = () => {
         return (
-            firstname.trim() &&
-            lastname.trim() &&
-            birthdate &&
-            gender &&
-            email.trim() &&
-            password &&
-            phone.trim() &&
-            role
+            formData.firstname.trim() &&
+            formData.lastname.trim() &&
+            formData.birthdate &&
+            formData.gender &&
+            formData.email.trim() &&
+            formData.password &&
+            formData.phone.trim() &&
+            formData.role
         );
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         
-        const newUserId = Math.max(...existingUsers.map(user => user.userid), 0) + 1;
+        if (!isFormValid() || isSubmitting) return;
         
-        const newUser = {
-            userid: newUserId,
-            firstname: firstname.trim(),
-            lastname: lastname.trim(),
-            contactnum: phone.trim(),
-            email: email.trim().toLowerCase(),
-            password: password,
-            birthdate: birthdate,
-            createdat: new Date().toISOString().slice(0, 19).replace('T', ' '),
-            role: role,
-            gender: gender,
-            specialization: specialization.trim(),
-            licenseNumber: licenseNumber.trim(),
-            affiliation: affiliation.trim()
-        };
+        setIsSubmitting(true);
+        
+        try {
+            const newUser = {
+                userid: Date.now(), // Better: generate a unique ID
+                firstname: formData.firstname.trim(),
+                lastname: formData.lastname.trim(),
+                contactnum: formData.phone.trim(),
+                email: formData.email.trim().toLowerCase(),
+                password: formData.password,
+                birthdate: formData.birthdate,
+                role: formData.role,
+                gender: formData.gender,
+                specialization: formData.specialization.trim(),
+                licensenum: formData.licenseNumber.trim(),
+                affiliation: formData.affiliation.trim()
+            };
 
-        if (onSave) {
-            onSave(newUser);
+            console.log("Submitting user:", newUser);
+            
+            // Call onSave if provided
+            if (onSave) {
+                // Assuming onSave might be async
+                await onSave(newUser);
+            }
+
+            // Reset form
+            setFormData({
+                firstname: "",
+                lastname: "",
+                birthdate: "",
+                gender: "",
+                email: "",
+                password: "",
+                phone: "",
+                specialization: "",
+                licenseNumber: "",
+                affiliation: "",
+                role: ""
+            });
+
+            // Close dialog
+            setOpen(false);
+        } catch (error) {
+            console.error("Error saving user:", error);
+        } finally {
+            setIsSubmitting(false);
         }
-
-        setFirstname("");
-        setLastname("");
-        setBirthdate("");
-        setGender("");
-        setEmail("");
-        setPassword("");
-        setPhone("");
-        setSpecialization("");
-        setLicenseNumber("");
-        setAffiliation("");
-        setRole("");
-
-        setOpen(false);
     };
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger className="flex items-center" asChild>
+            <DialogTrigger asChild>
                 <Button onClick={() => setOpen(true)}>
-                    <Plus /> Add User
+                    <Plus className="mr-2 h-4 w-4" /> Add User
                 </Button>
             </DialogTrigger>
 
-            <DialogContent className="max-w-xl">
+            <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
                     <DialogTitle>Create a New User</DialogTitle>
                 </DialogHeader>
@@ -112,8 +137,8 @@ export function AddUserDialog({ onSave, existingUsers }) {
                                 <FieldLabel className="text-sm font-medium">First Name*</FieldLabel>
                                 <Input
                                     type="text"
-                                    value={firstname}
-                                    onChange={(e) => setFirstname(e.target.value)}
+                                    value={formData.firstname}
+                                    onChange={(e) => handleChange("firstname", e.target.value)}
                                     required
                                 />
                             </Field>
@@ -122,8 +147,8 @@ export function AddUserDialog({ onSave, existingUsers }) {
                                 <FieldLabel className="text-sm font-medium">Last Name*</FieldLabel>
                                 <Input
                                     type="text"
-                                    value={lastname}
-                                    onChange={(e) => setLastname(e.target.value)}
+                                    value={formData.lastname}
+                                    onChange={(e) => handleChange("lastname", e.target.value)}
                                     required
                                 />
                             </Field>
@@ -132,8 +157,8 @@ export function AddUserDialog({ onSave, existingUsers }) {
                                 <FieldLabel className="text-sm font-medium">Date of Birth*</FieldLabel>
                                 <Input
                                     type="date"
-                                    value={birthdate}
-                                    onChange={(e) => setBirthdate(e.target.value)}
+                                    value={formData.birthdate}
+                                    onChange={(e) => handleChange("birthdate", e.target.value)}
                                     max={new Date().toISOString().split('T')[0]}
                                     required
                                 />
@@ -143,8 +168,8 @@ export function AddUserDialog({ onSave, existingUsers }) {
                                 <FieldLabel className="text-sm font-medium">Email*</FieldLabel>
                                 <Input
                                     type="email"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
+                                    value={formData.email}
+                                    onChange={(e) => handleChange("email", e.target.value)}
                                     required
                                 />
                             </Field>
@@ -155,8 +180,8 @@ export function AddUserDialog({ onSave, existingUsers }) {
                                 <FieldLabel className="text-sm font-medium">Phone Number*</FieldLabel>
                                 <Input
                                     type="tel"
-                                    value={phone}
-                                    onChange={(e) => setPhone(e.target.value)}
+                                    value={formData.phone}
+                                    onChange={(e) => handleChange("phone", e.target.value)}
                                     placeholder="09171234567"
                                     required
                                 />
@@ -166,36 +191,36 @@ export function AddUserDialog({ onSave, existingUsers }) {
                                 <FieldLabel className="text-sm font-medium">Password*</FieldLabel>
                                 <Input
                                     type="password"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
+                                    value={formData.password}
+                                    onChange={(e) => handleChange("password", e.target.value)}
                                     required
+                                    minLength={6}
                                 />
                             </Field>
 
                             <Field>
                                 <FieldLabel className="text-sm font-medium">Gender*</FieldLabel>
                                 <Input
-                                    type="text"
-                                    value={gender}
-                                    onChange={(e) => setGender(e.target.value)}
-                                    placeholder="e.g., Male, Female, Other"
+                                    onChange={(e) => handleChange("gender", e.target.value)}
+                                    placeholder="Male, Female, Others"
                                     required
-                                />
+                                >
+                                </Input>
                             </Field>
 
                             <Field>
                                 <FieldLabel className="text-sm font-medium">Role*</FieldLabel>
                                 <Select
-                                    value={role}
-                                    onValueChange={(value) => setRole(value)}
+                                    value={formData.role}
+                                    onValueChange={(value) => handleChange("role", value)}
+                                    required
                                 >
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select a role" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="patient">Patient</SelectItem>
+                                        <SelectItem value="pharmacist">Pharmacist</SelectItem>
                                         <SelectItem value="doctor">Doctor</SelectItem>
-
                                     </SelectContent>
                                 </Select>
                             </Field>
@@ -206,8 +231,8 @@ export function AddUserDialog({ onSave, existingUsers }) {
                                 <FieldLabel className="text-sm font-medium">Specialization</FieldLabel>
                                 <Input
                                     type="text"
-                                    value={specialization}
-                                    onChange={(e) => setSpecialization(e.target.value)}
+                                    value={formData.specialization}
+                                    onChange={(e) => handleChange("specialization", e.target.value)}
                                     placeholder="e.g., Cardiology, Pediatrics"
                                 />
                             </Field>
@@ -216,8 +241,8 @@ export function AddUserDialog({ onSave, existingUsers }) {
                                 <FieldLabel className="text-sm font-medium">License Number</FieldLabel>
                                 <Input
                                     type="text"
-                                    value={licenseNumber}
-                                    onChange={(e) => setLicenseNumber(e.target.value)}
+                                    value={formData.licenseNumber}
+                                    onChange={(e) => handleChange("licenseNumber", e.target.value)}
                                     placeholder="e.g., PRC-123456"
                                 />
                             </Field>
@@ -226,20 +251,32 @@ export function AddUserDialog({ onSave, existingUsers }) {
                                 <FieldLabel className="text-sm font-medium">Affiliation/Hospital</FieldLabel>
                                 <Input
                                     type="text"
-                                    value={affiliation}
-                                    onChange={(e) => setAffiliation(e.target.value)}
+                                    value={formData.affiliation}
+                                    onChange={(e) => handleChange("affiliation", e.target.value)}
                                     placeholder="e.g., St. Luke's Medical Center"
                                 />
                             </Field>
                         </FieldSet>
 
-                        <Button 
-                            className="col-span-2" 
-                            type="submit" 
-                            disabled={!isChanged()}
-                        >
-                            <Plus /> Save User
-                        </Button>
+                        <div className="col-span-2 flex justify-end gap-3">
+                            <Button 
+                                type="button"
+                                variant="outline"
+                                onClick={() => setOpen(false)}
+                            >
+                                Cancel
+                            </Button>
+                            <Button 
+                                type="submit" 
+                                disabled={!isFormValid() || isSubmitting}
+                            >
+                                {isSubmitting ? "Saving..." : (
+                                    <>
+                                        <Plus className="mr-2 h-4 w-4" /> Save User
+                                    </>
+                                )}
+                            </Button>
+                        </div>
                     </FieldGroup>
                 </form>
             </DialogContent>

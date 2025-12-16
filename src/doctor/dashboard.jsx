@@ -17,40 +17,7 @@ import { Label } from '@radix-ui/react-label';
 import { PatientViewRenderer } from './subcomponents/managepatientrenderer';
 import { AddPatientDialog } from './subcomponents/addexistingpatient';
 import { AddNewPatientDialog } from './subcomponents/addnewpatient';
-const generatePatientReport = async (patientId) => {
-    try {
-        const response = await fetch(`/report_generator.php?action=generatePatientReport&patientid=${patientId}`, {
-            headers: {
-                'Authorization': `Bearer ${yourAuthToken}` // Add your auth method
-            }
-        });
-        
-        const data = await response.json();
-        
-        if (data.pdf_base64) {
-            // Create a Blob from base64
-            const byteCharacters = atob(data.pdf_base64);
-            const byteNumbers = new Array(byteCharacters.length);
-            for (let i = 0; i < byteCharacters.length; i++) {
-                byteNumbers[i] = byteCharacters.charCodeAt(i);
-            }
-            const byteArray = new Uint8Array(byteNumbers);
-            const blob = new Blob([byteArray], { type: 'application/pdf' });
-            
-            // Create download link
-            const url = window.URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = data.filename || 'patient_report.pdf';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            window.URL.revokeObjectURL(url);
-        }
-    } catch (error) {
-        console.error('Error generating report:', error);
-    }
-};
+import { useAuth } from '@/common/authentication/auth';
 
 function AddExistingPatient(){
 
@@ -132,9 +99,10 @@ export function DoctorDashboard(){
 
     const [originalRowData, setOriginalRowData] = useState();
     const [rowData, setRowData] = useState();
-    
+    const { user } = useAuth();
+
     useEffect(() => {
-        fetch(`/server/includes/patient_manager.php?action=getPatients`)
+        fetch(`/server/includes/patient_manager.php?action=getPatients&doctorid`)
         .then(res => res.json())
         .then(data => 
             {
