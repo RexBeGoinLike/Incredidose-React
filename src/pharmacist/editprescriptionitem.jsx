@@ -218,8 +218,6 @@ export function EditPrescriptionItems() {
                                     {cart.map((item, index) => (
                                         <div key={index} className="border p-4 rounded">
 
-                                                
-
                                             <div className="flex justify-between mb-3">
                                                 <div>
                                                     <h4 className="font-medium">{item.name}</h4>
@@ -254,8 +252,8 @@ export function EditPrescriptionItems() {
                                                 <div>
                                                     <label className="text-xs">Quantity</label>
                                                     <div className="flex gap-1">
-                                                        <Button variant="outline" size="sm" onClick={() => updateCart(index, 'quantity', item.quantity - 1)}>
-                                                            <Minus className="h-3 w-2" />
+                                                        <Button variant="outline" size="icon" onClick={() => updateCart(index, 'quantity', item.quantity - 1)}>
+                                                            <Minus size={1} />
                                                         </Button>
                                                         <Input
                                                             value={item.quantity}
@@ -264,8 +262,8 @@ export function EditPrescriptionItems() {
                                                             onChange={(e) => updateCart(index, 'quantity', e.target.value)}
                                                             className="text-center"
                                                         />
-                                                        <Button variant="outline" size="sm" onClick={() => updateCart(index, 'quantity', item.quantity + 1)} disabled={item.quantity >= item.max}>
-                                                            <Plus className="h-3 w-2" />
+                                                        <Button variant="outline" size="icon" onClick={() => updateCart(index, 'quantity', item.quantity + 1)} disabled={item.quantity >= item.max}>
+                                                            <Plus size={1}/>
                                                         </Button>
                                                     </div>
                                                 </div>
@@ -279,12 +277,12 @@ export function EditPrescriptionItems() {
                                     ))}
                                 </div>
                                 
-                                <div className="border-t pt-4">
+                                <div className="border-t pt-42">
                                     <div className="flex justify-between items-center">
                                         <div>
                                             <p className="text-sm">{cart.length} items</p>
                                             <Button variant="outline" onClick={() => setCart([])}>
-                                                Clear Cart
+                                                Clear Cart  
                                             </Button>
                                         </div>
                                         <div className="text-right">

@@ -49,9 +49,10 @@ export function useAuth() {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({email, password}),
                     credentials: 'include'
-                })
+                }).then(() => {
+                    return data;
+                });
             }
-            return data;
         }) 
     };
 

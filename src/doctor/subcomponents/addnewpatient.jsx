@@ -87,7 +87,7 @@ export function AddNewPatientDialog({onSave}) {
                         <Field>
                             <FieldLabel className="text-sm font-medium">Birth Date*</FieldLabel>
                             <Input
-                                type="datetime-local"
+                                type="date"
                                 value={userBirthdate}
                                 onChange={(e) => setUserBirthdate(e.target.value)}
                             />
