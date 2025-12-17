@@ -107,7 +107,7 @@ export function Login() {
                             </Field> 
                             <Field className="pt-2">
                                 <Button type="submit" className="w-full" onClick={async (e) => {
-                                    e.preventDefault();
+                                    
                                     await login(email, password);
                                     }} disabled={isLoading}>
                                     {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
