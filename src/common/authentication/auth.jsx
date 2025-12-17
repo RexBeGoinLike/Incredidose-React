@@ -46,7 +46,7 @@ export function useAuth() {
             console.log("PHP_SUCCESS");
 
             if(data.role === 'admn'){
-                fetch('/node/auth/login', {
+                fetch('/api/auth/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({email, password}),

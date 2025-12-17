@@ -7,16 +7,15 @@ export default defineConfig(
   {
     server: {
       proxy: {
-        // Proxy requests starting with '/api'
         '/server': {
-          target: 'http://localhost/Incredidose',
+          target: 'http://localhost/incredidose-server',
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/server/, '') // ADD THIS LINE
+          rewrite: (path) => path.replace(/^\/server/, '')
         },
-        '/node': {
+        '/api': {
           target: 'http://localhost:3001',
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/node/, '') // ADD THIS LINE
+          rewrite: path => path.replace(/^\/api/, '')
         },
       }
     },

@@ -11,7 +11,7 @@ export function ViewLogs() {
     const [logsData, setLogsData] = useState([]);
 
     useEffect(() => {
-        fetch(`/node/admin/logs`)
+        fetch(`/api/admin/logs`)
         .then(res => res.json())
         .then(data => {
             setLogsData(data.logs);

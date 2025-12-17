@@ -19,8 +19,8 @@ export function AdminDashboard() {
         
         try {
             const path = (newUser.role == 'doctor') 
-                ? `/node/admin/doctors` 
-                : `/node/admin/pharmacists`;
+                ? `/api/admin/doctors` 
+                : `/api/admin/pharmacists`;
             
             const response = await fetch(path, {
                 method: 'POST',
@@ -67,7 +67,7 @@ export function AdminDashboard() {
     }, [tab]);
 
     function getDoctors(){
-        fetch(`/node/admin/doctors`, {
+        fetch(`/api/admin/doctors`, {
             method: 'GET',
             credentials: 'include'  
         })
@@ -82,7 +82,7 @@ export function AdminDashboard() {
     }
     
     function getPharmacists(){
-        fetch(`/node/admin/pharmacists`, {
+        fetch(`/api/admin/pharmacists`, {
             method: 'GET',
             credentials: 'include'  
         })
@@ -109,8 +109,8 @@ export function AdminDashboard() {
     const handleEditUser = (updatedUser) => {
         console.log("Editing user:", updatedUser);
         const path = (tab == 'doctor') 
-            ? `/node/admin/doctors/${updatedUser.userid}` 
-            : `/node/admin/pharmacists/${updatedUser.userid}`;
+            ? `/api/admin/doctors/${updatedUser.userid}` 
+            : `/api/admin/pharmacists/${updatedUser.userid}`;
         
         fetch(path, {
             method: 'PUT',
