@@ -6,7 +6,13 @@ import { useNavigate } from 'react-router-dom';
 
 export function Header(){
 
-    const { logout } = useAuth();
+    const { logout, user } = useAuth();
+
+    function nodeLogout(){
+        if(user.role == 'admn'){
+            fetch('/node/auth/logout');
+        }
+    }
     const navigate = useNavigate();
     return(
         //Wag mo muna gawing pink, masakit sa mata pag nagcocode ako
@@ -16,7 +22,10 @@ export function Header(){
                 <img src={text} className="w-40 h-auto"></img>     
             </div>
 
-            <Button variant="outline" onClick={() => logout()}>Log out</Button>
+            <Button variant="outline" onClick={() => {
+                logout();
+                nodeLogout();
+            }}>Log out</Button>
         </div>
     )
 }

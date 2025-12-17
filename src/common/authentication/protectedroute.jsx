@@ -14,7 +14,7 @@ export function ProtectedRoute({ children, allowedRoles = [] }) {
     }
 
     if (allowedRoles.length > 0 && !allowedRoles.includes(user.role)) {
-        return <Navigate to="/unauthorized" />;
+        return <Navigate to="/" />;
     }
 
     return children;

@@ -43,17 +43,23 @@ export function useAuth() {
         .then(data => {
             setUser(data);
             localStorage.setItem('user', JSON.stringify(data));
-            if(data.role == 'admn'){
-                fetch(`node/auth/login`, {
+            console.log("PHP_SUCCESS");
+
+            if(data.role === 'admn'){
+                fetch('/node/auth/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({email, password}),
                     credentials: 'include'
-                }).then(() => {
-                    return data;
+                }).then(res => res.json())
+                .then(data => {
+                    setUser(data);
+                    localStorage.setItem('user', JSON.stringify(data));
+                    console.log("NODE_SUCCESS");
+                    return data
                 });
-            }
-        }) 
+        }
+        });
     };
 
     const logout = async () => {

@@ -58,7 +58,10 @@ export function AddUserDialog({ onSave }) {
             formData.email.trim() &&
             formData.password &&
             formData.phone.trim() &&
-            formData.role
+            formData.role &&
+            formData.specialization.trim() &&
+            formData.licenseNumber.trim() &&
+            formData.affiliation.trim()
         );
     };
 
@@ -201,6 +204,7 @@ export function AddUserDialog({ onSave }) {
                             <Field>
                                 <FieldLabel className="text-sm font-medium">Gender*</FieldLabel>
                                 <Input
+                                    value={formData.gender}
                                     onChange={(e) => handleChange("gender", e.target.value)}
                                     placeholder="Male, Female, Others"
                                     required

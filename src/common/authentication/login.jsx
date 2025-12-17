@@ -18,33 +18,35 @@ export function Login() {
     const { login } = useAuth();
 
     useEffect(() => {
-        const checkSession = async () => {
-            try {
-                const response = await fetch('/server/includes/login.php?action=session', {
-                    credentials: 'include'
-                });
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.success) {
-                        if (data.role === 'pharmacist') {
-                            navigate('/pharmacist/dashboard');
-                        } else if (data.role === 'doctor') {
-                            navigate(`/doctor/dashboard`);
-                        } else if (data.role === 'ptnt') {
-                            navigate(`/patient/dashboard`);
-                        } else if (data.role === 'admn') {
-                            navigate(`/admin/dashboard`);
-                        }
+
+        checkSession();
+
+    }, [navigate]);
+
+    const checkSession = async () => {
+        try {
+            const response = await fetch('/server/includes/login.php?action=session', {
+                credentials: 'include'
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                if (data.success) {
+                    if (data.role === 'pharmacist') {
+                        navigate('/pharmacist/dashboard');
+                    } else if (data.role === 'doctor') {
+                        navigate(`/doctor/dashboard`);
+                    } else if (data.role === 'ptnt') {
+                        navigate(`/patient/dashboard`);
+                    } else if (data.role === 'admn') {
+                        navigate(`/admin/dashboard`);
                     }
                 }
-            } catch (error) {
-                console.error('Session check failed:', error);
             }
-        };
-        
-        checkSession();
-    }, [navigate]);
+        } catch (error) {
+            console.error('Session check failed:', error);
+        }
+    };
 
     return(
         <div className="flex justify-center items-center min-h-screen bg-gray-50 p-4">
@@ -104,7 +106,10 @@ export function Login() {
                                 />
                             </Field> 
                             <Field className="pt-2">
-                                <Button type="submit" className="w-full" onClick={() => login(email, password)} disabled={isLoading}>
+                                <Button type="submit" className="w-full" onClick={async (e) => {
+                                    e.preventDefault();
+                                    await login(email, password);
+                                    }} disabled={isLoading}>
                                     {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                                     {isLoading ? 'Authenticating...' : 'Sign In'}
                                 </Button>
