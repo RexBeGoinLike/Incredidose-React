@@ -40,13 +40,13 @@ export function useAuth() {
             credentials: 'include'
         })
         .then(res => res.json())
-        .then(data => {
+        .then(async data => {
             setUser(data);
             localStorage.setItem('user', JSON.stringify(data));
             console.log("PHP_SUCCESS");
 
             if(data.role === 'admn'){
-                fetch('/api/auth/login', {
+                await fetch('/api/auth/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({email, password}),
