@@ -220,7 +220,7 @@ export function AdminDashboard() {
         <>
             <Header />
             <Tabs value={tab} onValueChange={setTab}>
-                <div className="flex justify-start gap-4 items-center pt-5 pl-10 pr-10">
+                <div className="flex justify-start gap-4 items-center pt-5 pl-5 pr-10 flex-wrap">
                     <TabsList>
                         <TabsTrigger value="doctor">Doctor</TabsTrigger>
                         <TabsTrigger value="pharmacist">Pharmacist</TabsTrigger>

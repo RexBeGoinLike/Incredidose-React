@@ -68,7 +68,7 @@ export function PharmacistDashboard(){
         <>
             <Header />
             <Tabs value={value} onValueChange={setValue} >
-                <div className="pt-3 pl-10 pr-10">
+                <div className="pt-3 pl-5 pr-10">
                     <TabsList >
                         <TabsTrigger value="patient">Patient</TabsTrigger>
                         <TabsTrigger value="doctor">Doctor</TabsTrigger>
