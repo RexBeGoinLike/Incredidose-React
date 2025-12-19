@@ -6,11 +6,12 @@ import path from 'node:path'
 export default defineConfig(
   {
     server: {
+      allowedHosts: ['phenotypically-heterotypic-thomas.ngrok-free.dev'],
       proxy: {
-        '/server': {
-          target: 'http://localhost/incredidose-server',
+        '/server/includes': {
+          target: 'http://localhost:8080',
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/server/, '')
+          rewrite: (path) => path.replace(/^\/server\/includes/, '')
         },
         '/api': {
           target: 'http://localhost:3001',

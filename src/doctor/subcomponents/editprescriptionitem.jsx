@@ -93,10 +93,10 @@ export function EditPrescriptionDialog({onSave, props}) {
                         </Field>
 
                         <Field>
-                            <FieldLabel className="text-sm font-medium">Frequency (per day)*</FieldLabel>
+                            <FieldLabel className="text-sm font-medium">Frequency (every N day)*</FieldLabel>
                             <Input
                                 type="number"
-                                min={1}
+                                min={0}
                                 value={itemFrequency}
                                 onChange={(e) => setItemFrequency(e.target.value)}
                             />

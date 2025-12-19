@@ -15,7 +15,7 @@ export function AddPrescriptionDialog({onSave}) {
     const [itemBrand, setItemBrand] = useState("Generic");
     const [itemQuantity, setItemQuantity] = useState("1");
     const [itemDosage, setItemDosage] = useState("0");
-    const [itemFrequency, setItemFrequency] = useState("1");
+    const [itemFrequency, setItemFrequency] = useState("0");
     const [itemDescription, setItemDescription] = useState("");
     const [itemSubstitutions, setItemSubstitutions] = useState(false);
 
@@ -43,7 +43,7 @@ export function AddPrescriptionDialog({onSave}) {
             dosage: itemDosage,
             frequency: itemFrequency,
             description: itemDescription,
-            substitutions: itemSubstitutions,
+            substitutions: itemSubstitutions ? 1 : 0,
             id: nanoid()
         }
 

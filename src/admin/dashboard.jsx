@@ -216,6 +216,10 @@ export function AdminDashboard() {
         }
     ];
 
+    const searchFunction = (value) => {
+        setRowData( originalRowData.filter(user => user.firstname.includes(value.trim()) || user.lastname.includes(value.trim())));
+    };
+
     return (
         <>
             <Header />
@@ -240,13 +244,13 @@ export function AdminDashboard() {
                 </div>
                 
                 <TabsContent value="doctor">
-                    <DataTable rowData={rowData} colDefs={doctorColDefs} />
+                    <DataTable rowData={rowData} colDefs={doctorColDefs} searchFunction={searchFunction} />
                 </TabsContent>
                 <TabsContent value="pharmacist">
-                    <DataTable rowData={rowData} colDefs={pharmacistColDefs} />
+                    <DataTable rowData={rowData} colDefs={pharmacistColDefs} searchFunction={searchFunction} />
                 </TabsContent>
                 <TabsContent value="patient">
-                    <DataTable rowData={rowData} colDefs={patientColDefs} />
+                    <DataTable rowData={rowData} colDefs={patientColDefs} searchFunction={searchFunction} />
                 </TabsContent>
             </Tabs>
         </>

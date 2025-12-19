@@ -130,7 +130,7 @@ export function DoctorDashboard(){
     };
 
     function handleCreatePatient(data){
-        fetch(`/server/includes/patient_manager?action=addPatient`, {
+        fetch(`/server/includes/patient_manager.php?action=addPatient`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

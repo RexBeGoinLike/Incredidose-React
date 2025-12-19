@@ -25,6 +25,7 @@ export function CreateNewPrescription(){
     }
 
     const deleteData = (id, e) => {
+        if(originalRowData.length - 1 == 0) navigate(`/doctor/prescriptionlist/${patientid}`);
         setOriginalRowData(prev => prev.filter(item => item.id !== id));
         setRowData(prev => prev.filter(item => item.id !== id));
     }
@@ -56,7 +57,7 @@ export function CreateNewPrescription(){
 
     const handleSubmit = () => {
         fetch(`/server/includes/prescription_manager.php?action=addPrescription&patientid=${patientid}`)
-        .then(res => res.json())
+        .then(res => res.json())    
         .then(data => {
             originalRowData.map(prescriptionitems => {
                 prescriptionitems['prescriptionid'] = data.id;
@@ -65,10 +66,10 @@ export function CreateNewPrescription(){
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(prescriptionitems)
-                })
+                    body: JSON.stringify(prescriptionitems),
+                    credentials: 'include'
+                }).then(navigate(`/doctor/prescriptionlist/${patientid}`));
             })
-            navigate(`/doctor/prescriptionlist/${patientid}`)
         });
     }
 
@@ -77,10 +78,10 @@ export function CreateNewPrescription(){
     };
 
     return(
-        <>
+        <>  
             <Header />
             <DataTable rowData={rowData} colDefs={colDefs} searchFunction={searchFunction} searchPlaceholder={"Enter brand or medicine name..."}>
-                <AddPrescriptionDialog onSave={(data) => handleSave(data)}/>
+                <AddPrescriptionDialog onSave={data => handleSave(data)}/>
                 <Button onClick={() => handleSubmit()}><Pencil />Save</Button>
             </DataTable>
         </>

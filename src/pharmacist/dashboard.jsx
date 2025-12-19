@@ -17,8 +17,6 @@ export function PharmacistDashboard(){
         setRowData( originalRowData.filter(user => user.firstname.includes(value.trim()) || user.lastname.includes(value.trim())));
     };
 
-
-
     useEffect(() => {
         if(value == "patient"){
             fetch('/server/includes/patient_manager.php?action=getAllPatients')
